@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.example.buyshared.R
 import com.example.buyshared.databinding.FragmentLoginBinding
-import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.karumi.dexter.Dexter
 import android.Manifest.permission
 import android.webkit.PermissionRequest
 import android.widget.Toast
+import androidx.fragment.app.viewModels
+import com.example.buyshared.ui.Activity.ReplaceFragment
+import com.example.buyshared.ui.ViewModel.LoginViewModel
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
@@ -37,6 +39,7 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
     lateinit var tinyDB: TinyDB
     val replaceFragment = ReplaceFragment()
+    private val loginViewModel: LoginViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,10 +57,13 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         tinyDB = TinyDB(requireContext())
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+
         requireActivity().getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         );
+
         Dexter.withActivity(requireActivity())
             .withPermissions(
                 permission.CAMERA,
@@ -83,7 +89,21 @@ class LoginFragment : Fragment() {
 
             }).check()
 
+        binding.txtNoCuenta.setOnClickListener {
+            replaceFragment(R.id.contenedorFragment,RegisterFragment(),fragmentTransaction)
+        }
 
+        binding.btnLogin.setOnClickListener {
+            if (binding.txtEmail.text!!.isEmpty() || binding.txtPassword.text!!.isEmpty()) {
+                Toast.makeText(requireContext(), "ponga las credenciales", Toast.LENGTH_SHORT).show()
+            } else {
+                loginViewModel.login(
+                    binding.txtEmail.text.toString(),
+                    binding.txtPassword.text.toString(),
+                    requireContext()
+                )
+            }
+        }
 
         return binding.root
     }

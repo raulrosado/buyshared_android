@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.buyshared.R
+import com.example.buyshared.databinding.FragmentLoginBinding
+import com.example.buyshared.databinding.FragmentRegisterBinding
+import com.example.buyshared.ui.Activity.ReplaceFragment
+import com.example.buyshared.ui.Activity.TinyDB
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +26,11 @@ class RegisterFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding!!
+    lateinit var tinyDB: TinyDB
+    val replaceFragment = ReplaceFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,7 +44,14 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        tinyDB = TinyDB(requireContext())
+        val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+
+        binding.txtTengoCuenta.setOnClickListener {
+            replaceFragment(R.id.contenedorFragment,LoginFragment(),fragmentTransaction)
+        }
+        return binding.root
     }
 
     companion object {
