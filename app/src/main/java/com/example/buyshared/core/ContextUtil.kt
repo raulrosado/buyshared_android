@@ -12,6 +12,6 @@ class ContextUtil {
     }
 
     public fun getContextSaved1():Context{
-        return this.contextSaved!!
+        return this.contextSaved
     }
 }

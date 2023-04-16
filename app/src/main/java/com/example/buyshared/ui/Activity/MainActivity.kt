@@ -1,12 +1,14 @@
 package com.example.buyshared.ui.Activity
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.buyshared.R
 import com.example.buyshared.databinding.ActivityMainBinding
 import com.example.buyshared.ui.Fragment.LoginFragment
+import com.example.buyshared.ui.Fragment.WelcomeFragment
 
-@AndroidEntryPoint
+@dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     val replaceFragment = ReplaceFragment()
@@ -19,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun configInicio() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        replaceFragment(R.id.contenedorFragment, LoginFragment(), fragmentTransaction)
+        replaceFragment(R.id.contenedorFragment, WelcomeFragment(), fragmentTransaction)
     }
 }
 

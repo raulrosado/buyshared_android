@@ -11,14 +11,19 @@ import com.example.buyshared.databinding.FragmentLoginBinding
 import com.example.buyshared.ui.Activity.TinyDB
 import com.karumi.dexter.Dexter
 import android.Manifest.permission
+import android.app.ProgressDialog
+import android.content.Intent
+import android.util.Log
 import android.webkit.PermissionRequest
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.ViewModel.LoginViewModel
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,8 +35,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
@@ -40,7 +45,8 @@ class LoginFragment : Fragment() {
     lateinit var tinyDB: TinyDB
     val replaceFragment = ReplaceFragment()
     private val loginViewModel: LoginViewModel by viewModels()
-
+    private var pDialog: ProgressDialog? = null
+    var logi = "buysharedLog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +62,16 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        inicio()
+        return binding.root
+    }
+
+    private fun inicio() {
         tinyDB = TinyDB(requireContext())
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
+        pDialog = ProgressDialog(requireContext());
+        pDialog!!.setCancelable(true);
 
         requireActivity().getWindow().setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -82,9 +96,8 @@ class LoginFragment : Fragment() {
                     list: MutableList<com.karumi.dexter.listener.PermissionRequest>?,
                     permissionToken: PermissionToken?
                 ) {
-                    TODO("Not yet implemented")
-                Toast.makeText(requireContext(), "Permiso denegado", Toast.LENGTH_SHORT).show()
-                permissionToken?.continuePermissionRequest()
+                    Toast.makeText(requireContext(), "Permiso denegado", Toast.LENGTH_SHORT).show()
+                    permissionToken?.continuePermissionRequest()
                 }
 
             }).check()
@@ -95,7 +108,7 @@ class LoginFragment : Fragment() {
 
         binding.btnLogin.setOnClickListener {
             if (binding.txtEmail.text!!.isEmpty() || binding.txtPassword.text!!.isEmpty()) {
-                Toast.makeText(requireContext(), "ponga las credenciales", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Ponga las credenciales", Toast.LENGTH_SHORT).show()
             } else {
                 loginViewModel.login(
                     binding.txtEmail.text.toString(),
@@ -105,7 +118,28 @@ class LoginFragment : Fragment() {
             }
         }
 
-        return binding.root
+        loginViewModel.isLoading.observe(viewLifecycleOwner, Observer {
+            Log.v(logi, "esta:" + it)
+            if (it == true) {
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.loginLoading));
+                    pDialog!!.show()
+                }
+            } else {
+                if (pDialog!!.isShowing)
+                    pDialog!!.dismiss()
+            }
+        })
+
+        loginViewModel.isLogin.observe(viewLifecycleOwner, Observer {
+            if (it) {
+//                startActivity(Intent(requireContext(),MapsActivity::class.java))
+                Toast.makeText(context,"Login",Toast.LENGTH_SHORT)
+            }
+            if (!it) {
+                Toast.makeText(context,"Nooooo Login",Toast.LENGTH_SHORT)
+            }
+        })
     }
 
     companion object {

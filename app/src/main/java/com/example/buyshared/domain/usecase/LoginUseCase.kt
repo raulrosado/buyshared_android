@@ -2,7 +2,7 @@ package com.example.buyshared.domain.usecase
 
 import android.content.Context
 import com.example.buyshared.data.retrofitObjet.LoginResponse
-import com.example.buyshared.domain.repository.LoginRepository
+import com.example.buyshared.domain.repository.remote.LoginRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

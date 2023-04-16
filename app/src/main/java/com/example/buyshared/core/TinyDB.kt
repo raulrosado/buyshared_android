@@ -10,7 +10,7 @@ class TinyDB(appContext: Context) {
     var context = appContext
 
     private var preferences: SharedPreferences? =
-        context.getSharedPreferences("muevety", Context.MODE_PRIVATE)
+        context.getSharedPreferences("buyshared", Context.MODE_PRIVATE)
 
     fun getInt(key: String?): Int {
         return preferences!!.getInt(key, 0)

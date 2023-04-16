@@ -6,8 +6,8 @@ import com.example.buyshared.data.dao.UserDao
 import com.example.buyshared.data.model.User
 
 @Database(
-    version = 1,
-    exportSchema = true,
+    version = 2,
+    exportSchema = false,
     entities = [
         User::class
     ]
