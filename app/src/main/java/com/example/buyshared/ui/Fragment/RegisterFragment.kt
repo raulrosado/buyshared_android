@@ -2,18 +2,21 @@ package com.example.buyshared.ui.Fragment
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.buyshared.R
 import com.example.buyshared.databinding.FragmentLoginBinding
 import com.example.buyshared.databinding.FragmentRegisterBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.ViewModel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,6 +28,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [RegisterFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class RegisterFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -35,8 +39,8 @@ class RegisterFragment : Fragment() {
     lateinit var tinyDB: TinyDB
     val replaceFragment = ReplaceFragment()
     private val loginViewModel: LoginViewModel by viewModels()
-    private var pDialog: ProgressDialog? = null
     var logi = "buysharedLog"
+    private var pDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +63,18 @@ class RegisterFragment : Fragment() {
 
     private fun inicio() {
         tinyDB = TinyDB(requireContext())
+        pDialog = ProgressDialog(requireContext());
+        pDialog!!.setCancelable(true);
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
 
         binding.txtTengoCuenta.setOnClickListener {
-            replaceFragment(R.id.contenedorFragment,LoginFragment(),fragmentTransaction)
+            replaceFragment(R.id.contenedorFragment, LoginFragment(), fragmentTransaction)
         }
 
         binding.btnRegistro.setOnClickListener {
-            if (binding.textName.text!!.isEmpty() || binding.textEmail.text!!.isEmpty()|| binding.textPassword.text!!.isEmpty()) {
-                Toast.makeText(requireContext(), "Ponga las credenciales", Toast.LENGTH_SHORT).show()
+            if (binding.textName.text!!.isEmpty() || binding.textEmail.text!!.isEmpty() || binding.textPassword.text!!.isEmpty()) {
+                Toast.makeText(requireContext(), "Ponga las credenciales", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 loginViewModel.registro(
                     binding.textName.text.toString(),
@@ -77,6 +84,28 @@ class RegisterFragment : Fragment() {
                 )
             }
         }
+
+        loginViewModel.isLoading.observe(viewLifecycleOwner, Observer {
+            Log.v(logi, "esta:" + it)
+            if (it == true) {
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.loginRegister));
+                    pDialog!!.show()
+                }
+            } else {
+                if (pDialog!!.isShowing)
+                    pDialog!!.dismiss()
+            }
+        })
+
+        loginViewModel.isRegister.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                replaceFragment(R.id.contenedorFragment, LoginFragment(), fragmentTransaction)
+            }
+            if (!it) {
+                Toast.makeText(context,resources.getText(R.string.noRegistar),Toast.LENGTH_SHORT)
+            }
+        })
     }
 
     companion object {

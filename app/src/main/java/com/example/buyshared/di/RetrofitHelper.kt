@@ -4,8 +4,11 @@ import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.LoginApiClient
+import com.example.buyshared.data.remote.services.RegisterApiClient
 import com.example.buyshared.domain.repository.remote.LoginRepository
 import com.example.buyshared.domain.repository.remote.LoginRepositoryImpl
+import com.example.buyshared.domain.repository.remote.RegisterRepository
+import com.example.buyshared.domain.repository.remote.RegisterRepositoryImpl
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.Module
 import dagger.Provides
@@ -51,23 +54,28 @@ object RetrofitHelper {
 
     @Provides
     @Singleton
+    fun provideGetHelperRegister(app: Application): RegisterApiClient {
+        var tinyDB = TinyDB(app)
+        var server = tinyDB.getString("server")
+        Log.v("buysharedLog",server + "/api/")
+        Log.v("buysharedLog","registro")
+        return Retrofit.Builder()
+            .baseUrl(server + "v1/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(RegisterApiClient::class.java)
+    }
+    @Provides
+    @Singleton
     fun provideLoginRepository(api: LoginApiClient): LoginRepository {
         return LoginRepositoryImpl(api)
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideGetHelperRegistro(app: Application): RegistroApiClient {
-//        var tinyDB = TinyDB(app)
-//        var server = tinyDB.getString("server")
-//        Log.v("muevetyLog",server + "/api/")
-//        Log.v("muevetyLog","registro")
-//        return Retrofit.Builder()
-//            .baseUrl(server + "/api/")
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//            .create(RegistroApiClient::class.java)
-//    }
+    @Provides
+    @Singleton
+    fun provideRegisterRepository(api: RegisterApiClient): RegisterRepository {
+        return RegisterRepositoryImpl(api)
+    }
 
 
 

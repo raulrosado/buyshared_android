@@ -73,11 +73,6 @@ class LoginFragment : Fragment() {
         pDialog = ProgressDialog(requireContext());
         pDialog!!.setCancelable(true);
 
-        requireActivity().getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
-
         Dexter.withActivity(requireActivity())
             .withPermissions(
                 permission.CAMERA,
