@@ -3,8 +3,11 @@ package com.example.buyshared.di
 import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
+import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.domain.repository.remote.LoadEventRepository
+import com.example.buyshared.domain.repository.remote.LoadEventRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoginRepository
 import com.example.buyshared.domain.repository.remote.LoginRepositoryImpl
 import com.example.buyshared.domain.repository.remote.RegisterRepository
@@ -15,9 +18,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,12 +34,32 @@ object RetrofitHelper {
         var tinyDB = TinyDB(app)
         var server = tinyDB.getString("server")
         var token = tinyDB.getString("token")
-        var client =  OkHttpClient.Builder()
-            .addInterceptor(HeaderInterceptor(token!!))
-            .build()
+        Log.v("buysharedLog","access token:"+ token)
         return Retrofit.Builder()
             .baseUrl(server + "v1/api/")
-            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    fun interceptorFun(token:String): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor { chain ->
+            val newRequest: Request = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer $token")
+                .build()
+            chain.proceed(newRequest)
+        }.build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideLoadEventRetrofit2(app: Application): Retrofit {
+        var tinyDB = TinyDB(app)
+        var server = tinyDB.getString("server")
+        var token = tinyDB.getString("token")
+        return Retrofit.Builder()
+            .baseUrl(server + "v1/api/")
+            .client(interceptorFun(token!!))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -65,6 +90,25 @@ object RetrofitHelper {
             .build()
             .create(RegisterApiClient::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideLoadEvent(app: Application): LoadEventsApi {
+        var tinyDB = TinyDB(app)
+        var server = tinyDB.getString("server")
+        var token = tinyDB.getString("token")
+        Log.v("buysharedLog","registro:"+token)
+        var client =  OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor(token!!))
+            .build()
+        return Retrofit.Builder()
+            .baseUrl(server + "v1/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(LoadEventsApi::class.java)
+    }
+
     @Provides
     @Singleton
     fun provideLoginRepository(api: LoginApiClient): LoginRepository {
@@ -77,14 +121,12 @@ object RetrofitHelper {
         return RegisterRepositoryImpl(api)
     }
 
-
-
-//    @Provides
-//    @Singleton
-//    fun provideDelRetrofic(app: Application): DelPlaceRepository {
-//        var api = provideRetrofit(app).create(DelPlaceClient::class.java)
-//        return DelPlaceRepositoryImpl(api)
-//    }
+    @Provides
+    @Singleton
+    fun provideLoadEventRetrofic(app: Application): LoadEventRepository {
+        var api = provideLoadEventRetrofit2(app).create(LoadEventsApi::class.java)
+        return LoadEventRepositoryImpl(api)
+    }
 //
 //    @Provides
 //    @Singleton

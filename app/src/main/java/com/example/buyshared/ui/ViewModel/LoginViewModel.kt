@@ -26,7 +26,6 @@ class LoginViewModel @Inject constructor(
     val isRegister = MutableLiveData<Boolean>()
     val loginResponse = MutableLiveData<LoginResponse>()
     val registroResponse = MutableLiveData<RegisterResponse>()
-//    val olvidoResponse = MutableLiveData<OlvidoResponse>()
     lateinit var tinyDB: TinyDB
     var logi = "buysharedLog"
 
@@ -43,8 +42,6 @@ class LoginViewModel @Inject constructor(
 
                 tinyDB.putString("token", result?.token.toString())
                 tinyDB.putObject("user", result!!.user)
-
-//                usuarioRepository.insert(result?.user.toUsuario())
             } else {
                 isLoading.postValue(false)
                 isLogin.postValue(false)

@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import com.example.buyshared.R
 import com.example.buyshared.databinding.FragmentLoginBinding
 import com.example.buyshared.ui.Activity.TinyDB
@@ -14,10 +13,10 @@ import android.Manifest.permission
 import android.app.ProgressDialog
 import android.content.Intent
 import android.util.Log
-import android.webkit.PermissionRequest
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.example.buyshared.ui.Activity.Principal
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.ViewModel.LoginViewModel
 import com.karumi.dexter.MultiplePermissionsReport
@@ -127,9 +126,10 @@ class LoginFragment : Fragment() {
         })
 
         loginViewModel.isLogin.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context,"Login action",Toast.LENGTH_SHORT)
             if (it) {
-//                startActivity(Intent(requireContext(),MapsActivity::class.java))
                 Toast.makeText(context,"Login",Toast.LENGTH_SHORT)
+                startActivity(Intent(requireContext(),Principal::class.java))
             }
             if (!it) {
                 Toast.makeText(context,"Nooooo Login",Toast.LENGTH_SHORT)
