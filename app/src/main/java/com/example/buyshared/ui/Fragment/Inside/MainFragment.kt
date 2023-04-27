@@ -88,6 +88,7 @@ class MainFragment : Fragment() {
         }
 
         mainViewModel.loadEventos(requireContext())
+        mainViewModel.loadLists(requireContext())
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

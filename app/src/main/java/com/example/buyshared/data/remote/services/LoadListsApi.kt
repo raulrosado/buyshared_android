@@ -11,9 +11,9 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-interface LoadEventsApi {
-    @GET("event/user/{id}")
-    suspend fun getEventsApiClient(
+interface LoadListsApi {
+    @GET("list/user/{id}")
+    suspend fun getListsApiClient(
         @Path("id") id: String,
-    ): Response<EventResponse>
+    ): Response<ListResponse>
 }
