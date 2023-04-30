@@ -2,12 +2,8 @@ package com.example.buyshared.domain.repository.remote
 
 import android.content.Context
 import android.util.Log
-import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
-import com.example.buyshared.data.remote.services.LoginApiClient
-import com.example.buyshared.data.retrofitObjet.EventResponse
 import com.example.buyshared.data.retrofitObjet.ListResponse
-import com.example.buyshared.data.retrofitObjet.LoginResponse
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException

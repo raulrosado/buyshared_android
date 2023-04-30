@@ -1,9 +1,7 @@
 package com.example.buyshared.domain.usecase
 
 import android.content.Context
-import com.example.buyshared.data.retrofitObjet.EventResponse
 import com.example.buyshared.data.retrofitObjet.ListResponse
-import com.example.buyshared.domain.repository.remote.LoadEventRepository
 import com.example.buyshared.domain.repository.remote.LoadListsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

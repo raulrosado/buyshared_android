@@ -55,4 +55,10 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="title">item_event_nombre</string>
+    <string name="secondary_text">secondText</string>
+    <string name="supporting_text">supportText</string>
+    <string name="action_1">Accion1</string>
+    <string name="action_2">Accion2</string>
+    <string name="articulo">Artículos</string>
 </resources>

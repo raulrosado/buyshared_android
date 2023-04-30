@@ -1,13 +1,10 @@
 package com.example.buyshared.domain.repository
 
-import com.example.buyshared.data.model.User
+import com.example.buyshared.data.model.UserEntity
 
 interface UserRepository {
-    fun insert(user: User)
-
-    fun update(user: User)
-
-    fun delete(user: User)
-
+    fun insert(user: UserEntity)
+    fun update(user: UserEntity)
+    fun delete(user: UserEntity)
     fun deleteAll()
 }

@@ -61,7 +61,7 @@ object RetrofitHelper {
         var server = tinyDB.getString("server")
         var token = tinyDB.getString("token")
         return Retrofit.Builder()
-            .baseUrl(server + "v1/api/")
+            .baseUrl(server + "v2/api/")
             .client(interceptorFun(token!!))
             .addConverterFactory(GsonConverterFactory.create())
             .build()

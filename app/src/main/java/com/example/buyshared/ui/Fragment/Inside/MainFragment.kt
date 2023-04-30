@@ -10,18 +10,22 @@ import android.widget.AdapterView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.MenuRes
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import com.example.buyshared.R
+import com.example.buyshared.adapter.EventAdapter
 import com.example.buyshared.databinding.FragmentMainBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
-import com.example.buyshared.ui.Fragment.RegisterFragment
-import com.example.buyshared.ui.ViewModel.LoginViewModel
-import com.example.buyshared.ui.ViewModel.MainViewModel
+import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
+
 
 /**
  * A simple [Fragment] subclass.
@@ -39,8 +43,9 @@ class MainFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private var _binding: FragmentMainBinding? = null
+    lateinit var _binding: FragmentMainBinding
     private val binding get() = _binding!!
+
     lateinit var tinyDB: TinyDB
     val replaceFragment = ReplaceFragment()
     private val mainViewModel: MainViewModel by viewModels()
@@ -62,7 +67,8 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+//        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_main, container, false)
 
         inicio()
         return binding.root
@@ -87,9 +93,34 @@ class MainFragment : Fragment() {
             bottomSheetDialog!!.show()
         }
 
+        val recyclerViewEvent = binding.recyclerEventos
+        recyclerViewEvent.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+
         mainViewModel.loadEventos(requireContext())
         mainViewModel.loadLists(requireContext())
+
+        mainViewModel.isLoading.observe(viewLifecycleOwner,{
+            if (it === true) {
+                binding.progressBarLogin.visibility = View.VISIBLE
+            }else{
+                binding.progressBarLogin.visibility = View.GONE
+            }
+        })
+
+//        mainViewModel.eventView.observe(viewLifecycleOwner,{
+////            binding.layoutEvents.visibility = View.VISIBLE
+////            if (it === View.VISIBLE) {
+////            }else{
+////                binding.layoutEvents.visibility = View.GONE
+////            }
+//        })
+
+        mainViewModel.listEvents.observe(viewLifecycleOwner,{
+
+            recyclerViewEvent.adapter = EventAdapter(it)
+        })
     }
+
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
         val popupMenu = PopupMenu(context, v)
