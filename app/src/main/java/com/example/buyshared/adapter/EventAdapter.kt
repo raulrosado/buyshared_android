@@ -10,7 +10,7 @@ class EventAdapter(private val eventosList: List<EventsEntity> ) : RecyclerView.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return EventViewHolder(layoutInflater.inflate(R.layout.item_event,parent,false))
+        return EventViewHolder(layoutInflater.inflate(R.layout.item_event,parent,false),parent)
     }
 
     override fun getItemCount(): Int = eventosList.size

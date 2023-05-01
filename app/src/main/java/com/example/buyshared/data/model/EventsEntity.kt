@@ -17,5 +17,6 @@ class EventsEntity (
     @ColumnInfo(name = "referencia") val referencia:String,
     @ColumnInfo(name = "__v") val __v:Int,
     @ColumnInfo(name = "cant") val cant:Int,
-    @ColumnInfo(name = "complet") val complet:Int
+    @ColumnInfo(name = "complet") val complet:Int,
+    @ColumnInfo(name = "taskcomplet") val taskcomplet:Int
 ):Serializable

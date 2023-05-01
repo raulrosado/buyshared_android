@@ -2,11 +2,13 @@ package com.example.buyshared.ui.Fragment.Inside
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.MenuRes
@@ -15,15 +17,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import com.example.buyshared.R
 import com.example.buyshared.adapter.EventAdapter
+import com.example.buyshared.adapter.ListsAdapter
 import com.example.buyshared.databinding.FragmentMainBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -88,13 +90,31 @@ class MainFragment : Fragment() {
         binding.btnOptions.setOnClickListener {
             showMenu(it, R.menu.option)
         }
-
         binding.btnAddList.setOnClickListener{
             bottomSheetDialog!!.show()
         }
 
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
+            bottomSheetDialog!!.hide()
+        }
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!.setOnClickListener {
+            mainViewModel.insertListRetrofit(
+                bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString(),
+                "1",
+                "",
+                ""
+            )
+            if (!pDialog!!.isShowing) {
+                pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                pDialog!!.show()
+            }
+        }
+
+
         val recyclerViewEvent = binding.recyclerEventos
+        val recyclerViewList = binding.recyclerLista
         recyclerViewEvent.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+        recyclerViewList.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
 
         mainViewModel.loadEventos(requireContext())
         mainViewModel.loadLists(requireContext())
@@ -107,18 +127,42 @@ class MainFragment : Fragment() {
             }
         })
 
-//        mainViewModel.eventView.observe(viewLifecycleOwner,{
-////            binding.layoutEvents.visibility = View.VISIBLE
-////            if (it === View.VISIBLE) {
-////            }else{
-////                binding.layoutEvents.visibility = View.GONE
-////            }
-//        })
+        mainViewModel.isInsert.observe(viewLifecycleOwner,{
+            Log.v(logi,"Insertando......"+it)
+            if (it === true) {
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                    pDialog!!.show()
+                }
+            }else{
+                if (pDialog!!.isShowing) {
+                    pDialog!!.hide()
+                }
+                bottomSheetDialog!!.hide()
+            }
+        })
+
+        mainViewModel.eventView.observe(viewLifecycleOwner,{
+            binding.layoutEvents.visibility = it
+        })
 
         mainViewModel.listEvents.observe(viewLifecycleOwner,{
-
             recyclerViewEvent.adapter = EventAdapter(it)
+            Log.v("buysharedLog","cantidad eventos:"+it.size)
+            if(it.size === 0){
+                binding.layoutEvents.visibility = View.GONE
+            }else{
+                binding.layoutEvents.visibility = View.VISIBLE
+            }
         })
+
+        mainViewModel.listLists.observe(viewLifecycleOwner,{
+            recyclerViewList.adapter = ListsAdapter(it)
+        })
+
+
+
+
     }
 
 

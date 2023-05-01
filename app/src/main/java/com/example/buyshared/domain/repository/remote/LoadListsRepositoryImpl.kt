@@ -3,7 +3,7 @@ package com.example.buyshared.domain.repository.remote
 import android.content.Context
 import android.util.Log
 import com.example.buyshared.data.remote.services.LoadListsApi
-import com.example.buyshared.data.retrofitObjet.ListResponse
+import com.example.buyshared.data.retrofitObjet.ListsResponse
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -15,8 +15,8 @@ class LoadListsRepositoryImpl  @Inject constructor(
     override suspend fun loadListsRepository(
         userId: String,
         context: Context
-    ): Response<ListResponse>? {
-        var response: Response<ListResponse>? = null
+    ): Response<ListsResponse>? {
+        var response: Response<ListsResponse>? = null
         try {
             response = apiRetrofit.getListsApiClient(userId)
             Log.v("buysharedLog", "response:"+response.toString())

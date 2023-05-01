@@ -3,10 +3,13 @@ package com.example.buyshared.di
 import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
+import com.example.buyshared.data.remote.services.InsertListApiClient
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.domain.repository.remote.InsertListRepository
+import com.example.buyshared.domain.repository.remote.InsertListRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoadEventRepository
 import com.example.buyshared.domain.repository.remote.LoadEventRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoadListsRepository
@@ -135,6 +138,13 @@ object RetrofitHelper {
     fun provideLoadListsRetrofic(app: Application): LoadListsRepository {
         var api = provideLoadEventRetrofit2(app).create(LoadListsApi::class.java)
         return LoadListsRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInsertListsRetrofic(app: Application): InsertListRepository {
+        var api = provideLoadEventRetrofit2(app).create(InsertListApiClient::class.java)
+        return InsertListRepositoryImpl(api)
     }
 //
 //    @Provides

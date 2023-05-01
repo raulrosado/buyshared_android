@@ -61,4 +61,5 @@
     <string name="action_1">Accion1</string>
     <string name="action_2">Accion2</string>
     <string name="articulo">Artículos</string>
+    <string name="insertMessage">Insertando...</string>
 </resources>

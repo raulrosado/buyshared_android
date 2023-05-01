@@ -112,7 +112,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerEventos"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="15dp"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -127,6 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="Listas"
                     android:textSize="24dp"
+                    android:layout_marginBottom="15dp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.example.buyshared.data.db.db
 import com.example.buyshared.domain.repository.EventsRepository
 import com.example.buyshared.domain.repository.EventsRepositoryImpl
+import com.example.buyshared.domain.repository.ListsRepository
+import com.example.buyshared.domain.repository.ListsRepositoryImpl
 import com.example.buyshared.domain.repository.UserRepository
 import com.example.buyshared.domain.repository.UserReposityImpl
 import dagger.Module
@@ -37,5 +39,10 @@ object AppModule {
     @Singleton
     fun provideEventRepository(db: db): EventsRepository {
         return EventsRepositoryImpl(db.getEventsDao())
+    }
+    @Provides
+    @Singleton
+    fun provideListRepository(db: db): ListsRepository {
+        return ListsRepositoryImpl(db.getListsDao())
     }
 }
