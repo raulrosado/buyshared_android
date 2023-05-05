@@ -12,21 +12,25 @@ import com.example.buyshared.data.retrofitObjet.EventsResponse
 import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
+import com.example.buyshared.data.retrofitObjet.LoadListDetailResponse
 import com.example.buyshared.data.retrofitObjet.LoginResponse
 import com.example.buyshared.data.retrofitObjet.User
 import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
+import com.example.buyshared.domain.usecase.GetListByIdUserCase
 import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
 import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventUseCase
+import com.example.buyshared.domain.usecase.LoadListTaskRetrofitUserCase
 import com.example.buyshared.domain.usecase.LoadListsUseCase
 import com.example.buyshared.domain.usecase.getAllEventsDBUseCase
 import com.example.buyshared.domain.usecase.getAllListsDBUseCase
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -44,7 +48,9 @@ class MainViewModel @Inject constructor(
     private val getAllListsDBUseCase: getAllListsDBUseCase,
     private val insertListRetrofitUseCase: InsertListRetrofitUseCase,
     private val insertEventRetrofitUseCase: InsetEventRetrofitUseCase,
-    private val getEventByIdUserCase: GetEventByIdUserCase
+    private val getEventByIdUserCase: GetEventByIdUserCase,
+    private val getListByIdUserCase: GetListByIdUserCase,
+    private val loadListTaskRetrofitUserCase: LoadListTaskRetrofitUserCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
@@ -56,6 +62,7 @@ class MainViewModel @Inject constructor(
     val listEvents = MutableLiveData<List<EventsEntity>>()
     val listLists = MutableLiveData<List<ListsEntity>>()
     val isInsert = MutableLiveData<Boolean>()
+    val isLoadTask = MutableLiveData<Boolean>()
 
     fun loadEventos(context: Context) {
         isLoading.postValue(true)
@@ -178,9 +185,36 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getInfoEventById(id:String): EventsEntity? {
+    fun getInfoEventById(id: String): EventsEntity? {
         return getEventByIdUserCase.invoke(id)
     }
 
+    fun getInfoListById(id: String): ListsEntity? {
+        return getListByIdUserCase.invoke(id)
+    }
 
+    fun loadTaskList(idList: String) {
+        isLoadTask.postValue(true)
+        viewModelScope.launch {
+            val result: LoadListDetailResponse? = loadListTaskRetrofitUserCase.invoke(idList)
+            Log.v(logi, "success:" + result)
+            isLoadTask.postValue(false)
+
+//            insertListsDBUseCase.invoke(
+//                ListsEntity(
+//                    0,
+//                    result!!._id,
+//                    result!!.__v,
+//                    result!!.cant,
+//                    result!!.nombre,
+//                    result!!.referencia,
+//                    result!!.estado,
+//                    result!!.id_user
+//                )
+//            )
+//            val getAllList = getAllListsDBUseCase.invoke()
+//            listLists.postValue(getAllList)
+
+        }
+    }
 }

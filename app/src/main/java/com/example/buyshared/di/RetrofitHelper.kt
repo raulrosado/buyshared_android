@@ -7,6 +7,7 @@ import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
+import com.example.buyshared.data.remote.services.LoadListsTasksApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
 import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepository
@@ -17,6 +18,8 @@ import com.example.buyshared.domain.repository.remote.LoadEventRepository
 import com.example.buyshared.domain.repository.remote.LoadEventRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoadListsRepository
 import com.example.buyshared.domain.repository.remote.LoadListsRepositoryImpl
+import com.example.buyshared.domain.repository.remote.LoadListsTasksRepository
+import com.example.buyshared.domain.repository.remote.LoadListsTasksRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoginRepository
 import com.example.buyshared.domain.repository.remote.LoginRepositoryImpl
 import com.example.buyshared.domain.repository.remote.RegisterRepository
@@ -167,6 +170,12 @@ object RetrofitHelper {
     fun provideInsertEventsRetrofic(app: Application): InsertEventRetrofitRepository {
         var api = provideRetrofitv1(app).create(InsertEventApiClient::class.java)
         return InsertEventRetrofitRepositoryImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideLoadTaskListRetrofic(app: Application): LoadListsTasksRepository {
+        var api = provideRetrofitv1(app).create(LoadListsTasksApi::class.java)
+        return LoadListsTasksRepositoryImpl(api)
     }
 
 }

@@ -35,4 +35,8 @@ class ListsRepositoryImpl @Inject constructor(
         dao.insertAll(listLists)
     }
 
+    override fun getById(id: String): ListsEntity {
+        return dao.getById(id)
+    }
+
 }

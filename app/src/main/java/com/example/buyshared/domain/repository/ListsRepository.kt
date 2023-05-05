@@ -14,4 +14,6 @@ interface ListsRepository {
     suspend fun getAllLists():List<ListsEntity>
 
     suspend fun insertAll(listLists:List<ListsEntity>)
+
+    fun getById(id:String): ListsEntity
 }

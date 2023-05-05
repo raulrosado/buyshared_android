@@ -4,9 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.buyshared.data.dao.EventsDao
 import com.example.buyshared.data.dao.ListasDao
+import com.example.buyshared.data.dao.TaskDao
 import com.example.buyshared.data.dao.UserDao
 import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.ListsEntity
+import com.example.buyshared.data.model.TaskEntity
 import com.example.buyshared.data.model.UserEntity
 
 @Database(
@@ -15,11 +17,14 @@ import com.example.buyshared.data.model.UserEntity
     entities = [
         UserEntity::class,
         EventsEntity::class,
-        ListsEntity::class
+        ListsEntity::class,
+        TaskEntity::class
     ]
 )
 abstract class db : RoomDatabase() {
-    abstract fun getUserDao() :UserDao
-    abstract fun getEventsDao() : EventsDao
-    abstract fun getListsDao() : ListasDao
+    abstract fun getUserDao(): UserDao
+    abstract fun getEventsDao(): EventsDao
+    abstract fun getListsDao(): ListasDao
+    abstract fun getTaskDao(): TaskDao
+
 }
