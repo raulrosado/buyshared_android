@@ -18,6 +18,7 @@
     <string name="comoEvento">Agregar como evento</string>
     <string name="agregar">Agregar</string>
     <string name="cancelar">Cancelar</string>
+    <string name="AddEventos">Agregar Evento</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -62,4 +63,7 @@
     <string name="action_2">Accion2</string>
     <string name="articulo">Artículos</string>
     <string name="insertMessage">Insertando...</string>
+    <string name="selectforgalery">Seleccione desde la galeria</string>
+    <string name="addNote">Agregar nota</string>
+    <string name="miembros">Miembros:</string>
 </resources>

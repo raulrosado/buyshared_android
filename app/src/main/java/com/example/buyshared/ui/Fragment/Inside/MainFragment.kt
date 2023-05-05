@@ -1,6 +1,7 @@
 package com.example.buyshared.ui.Fragment.Inside
 
 import android.app.ProgressDialog
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,14 +10,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.MenuRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.buyshared.R
 import com.example.buyshared.adapter.EventAdapter
 import com.example.buyshared.adapter.ListsAdapter
@@ -25,8 +31,11 @@ import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
+import org.json.JSONObject
+import java.io.File
 
 
 /**
@@ -55,6 +64,7 @@ class MainFragment : Fragment() {
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
     var bottomSheetDialog: BottomSheetDialog? = null
+    lateinit var uriImagen: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +79,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        _binding = FragmentMainBinding.inflate(inflater, container, false)
-        _binding = DataBindingUtil.inflate(inflater,R.layout.fragment_main, container, false)
+        _binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
 
         inicio()
         return binding.root
@@ -82,6 +91,24 @@ class MainFragment : Fragment() {
         pDialog = ProgressDialog(requireContext());
         pDialog!!.setCancelable(true);
 
+        val tinyInfo = JSONObject(tinyDB.getString("user").toString())
+        binding.UserName.text = tinyInfo.getString("name")
+        binding.UserLastName.text = tinyInfo.getString("apellidos")
+        Glide.with(requireContext()).load("https://buyshare.onrender.com/images/"+tinyInfo.getString("avatar")).into(binding.userAvatar);
+
+        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){uri ->
+            if(uri != null ){
+                //imagen seleccionada
+                Log.v(logi,"Imagen Seleccionada:"+uri)
+                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.text = uri.lastPathSegment.toString()
+                uriImagen = uri
+            }else{
+                //no imagen
+                Log.v(logi,"No Seleccionada")
+            }
+
+        }
+
         bottomSheetDialog = BottomSheetDialog(requireContext())
         val viewrutas: View = layoutInflater.inflate(R.layout.addeventorlist, null)
         bottomSheetDialog!!.setContentView(viewrutas)
@@ -90,51 +117,85 @@ class MainFragment : Fragment() {
         binding.btnOptions.setOnClickListener {
             showMenu(it, R.menu.option)
         }
-        binding.btnAddList.setOnClickListener{
+        binding.btnAddList.setOnClickListener {
             bottomSheetDialog!!.show()
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
             bottomSheetDialog!!.hide()
         }
-        bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!.setOnClickListener {
-            mainViewModel.insertListRetrofit(
-                bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString(),
-                "1",
-                "",
-                ""
-            )
-            if (!pDialog!!.isShowing) {
-                pDialog!!.setMessage(resources.getString(R.string.insertMessage));
-                pDialog!!.show()
-            }
-        }
 
+        bottomSheetDialog!!.findViewById<MaterialSwitch>(R.id.materialSwitch)!!
+            .setOnCheckedChangeListener(
+                CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+                    Log.v(logi, "Password Switch is checked " + isChecked)
+                    if (isChecked) {
+                        bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility = View.VISIBLE
+                        bottomSheetDialog!!.findViewById<TextView>(R.id.txtName)!!.hint = getString(R.string.AddEventos)
+                        if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
+                            Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
+                        } else {
+                            bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!
+                                .setOnClickListener {
+                                    val imageFile = File(uriImagen.getPath());
+                                    mainViewModel.inserEventRetrofit(
+                                        bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString(),
+                                        imageFile
+                                    )
+                                }
+                        }
+                    } else {
+                        bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility =
+                            View.GONE
+                        bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!.setOnClickListener {
+                            if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
+                                Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
+                            } else {
+                                mainViewModel.insertListRetrofit(
+                                    bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString(),
+                                    "1",
+                                    "",
+                                    ""
+                                )
+                                if (!pDialog!!.isShowing) {
+                                    pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                                    pDialog!!.show()
+                                }
+                            }
+                        }
+                    }
+                })
+
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
 
         val recyclerViewEvent = binding.recyclerEventos
         val recyclerViewList = binding.recyclerLista
-        recyclerViewEvent.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
-        recyclerViewList.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
+        recyclerViewEvent.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         mainViewModel.loadEventos(requireContext())
         mainViewModel.loadLists(requireContext())
 
-        mainViewModel.isLoading.observe(viewLifecycleOwner,{
+        mainViewModel.isLoading.observe(viewLifecycleOwner, {
             if (it === true) {
                 binding.progressBarLogin.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.progressBarLogin.visibility = View.GONE
             }
         })
 
-        mainViewModel.isInsert.observe(viewLifecycleOwner,{
-            Log.v(logi,"Insertando......"+it)
+        mainViewModel.isInsert.observe(viewLifecycleOwner, {
+            Log.v(logi, "Insertando......" + it)
             if (it === true) {
                 if (!pDialog!!.isShowing) {
                     pDialog!!.setMessage(resources.getString(R.string.insertMessage));
                     pDialog!!.show()
                 }
-            }else{
+            } else {
                 if (pDialog!!.isShowing) {
                     pDialog!!.hide()
                 }
@@ -142,27 +203,23 @@ class MainFragment : Fragment() {
             }
         })
 
-        mainViewModel.eventView.observe(viewLifecycleOwner,{
+        mainViewModel.eventView.observe(viewLifecycleOwner, {
             binding.layoutEvents.visibility = it
         })
 
-        mainViewModel.listEvents.observe(viewLifecycleOwner,{
-            recyclerViewEvent.adapter = EventAdapter(it)
-            Log.v("buysharedLog","cantidad eventos:"+it.size)
-            if(it.size === 0){
+        mainViewModel.listEvents.observe(viewLifecycleOwner, {
+            recyclerViewEvent.adapter = EventAdapter(it,requireActivity())
+            Log.v("buysharedLog", "cantidad eventos:" + it.size)
+            if (it.size === 0) {
                 binding.layoutEvents.visibility = View.GONE
-            }else{
+            } else {
                 binding.layoutEvents.visibility = View.VISIBLE
             }
         })
 
-        mainViewModel.listLists.observe(viewLifecycleOwner,{
-            recyclerViewList.adapter = ListsAdapter(it)
+        mainViewModel.listLists.observe(viewLifecycleOwner, {
+            recyclerViewList.adapter = ListsAdapter(it,requireActivity())
         })
-
-
-
-
     }
 
 
@@ -174,9 +231,14 @@ class MainFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_setting -> {
                     // Respond to context menu item 1 click.
-                    replaceFragment(R.id.contenedorFragmentPrincipal, SettingFragment(),fragmentTransaction)
+                    replaceFragment(
+                        R.id.contenedorFragmentPrincipal,
+                        SettingFragment(),
+                        fragmentTransaction
+                    )
                     true
                 }
+
                 R.id.menu_logout -> {
                     Toast.makeText(context, "logout", Toast.LENGTH_SHORT).show()
                     true
@@ -196,11 +258,13 @@ class MainFragment : Fragment() {
                 Toast.makeText(context, "setting", Toast.LENGTH_SHORT)
                 true
             }
+
             R.id.menu_logout -> {
                 // Respond to context menu item 2 click.
                 Toast.makeText(context, "logout", Toast.LENGTH_SHORT)
                 true
             }
+
             else -> super.onContextItemSelected(item)
         }
     }

@@ -9,15 +9,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.ListsEntity
 import com.example.buyshared.data.retrofitObjet.EventsResponse
+import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
 import com.example.buyshared.data.retrofitObjet.LoginResponse
 import com.example.buyshared.data.retrofitObjet.User
 import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
+import com.example.buyshared.domain.usecase.GetEventByIdUserCase
 import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
+import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventUseCase
 import com.example.buyshared.domain.usecase.LoadListsUseCase
 import com.example.buyshared.domain.usecase.getAllEventsDBUseCase
@@ -25,6 +28,7 @@ import com.example.buyshared.domain.usecase.getAllListsDBUseCase
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 
@@ -38,8 +42,10 @@ class MainViewModel @Inject constructor(
     private val cleanListsDBUseCase: CleanListsDBUseCase,
     private val insertListsDBUseCase: InsertListsDBUseCase,
     private val getAllListsDBUseCase: getAllListsDBUseCase,
-    private val insertListRetrofitUseCase: InsertListRetrofitUseCase
-): ViewModel() {
+    private val insertListRetrofitUseCase: InsertListRetrofitUseCase,
+    private val insertEventRetrofitUseCase: InsetEventRetrofitUseCase,
+    private val getEventByIdUserCase: GetEventByIdUserCase
+) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
     lateinit var tinyDB: TinyDB
@@ -51,24 +57,24 @@ class MainViewModel @Inject constructor(
     val listLists = MutableLiveData<List<ListsEntity>>()
     val isInsert = MutableLiveData<Boolean>()
 
-    fun loadEventos(context:Context){
+    fun loadEventos(context: Context) {
         isLoading.postValue(true)
         isLoadingView.postValue(View.VISIBLE)
         tinyDB = TinyDB(context)
-        val user = tinyDB.getObject("user",User::class.java)
+        val user = tinyDB.getObject("user", User::class.java)
         viewModelScope.launch {
             val result: EventsResponse? = loadEventUseCase(user._id, context)
             Log.v(logi, "success:" + result)
-            Log.v(logi,"cantidad eventos:"+result!!.size)
+            Log.v(logi, "cantidad eventos:" + result!!.size)
 
-            if(result!!.size === 0){
+            if (result!!.size === 0) {
                 eventView.postValue(View.GONE)
-                Log.v(logi,"eventos vacio")
-            }else{
+                Log.v(logi, "eventos vacio")
+            } else {
                 eventView.postValue(View.VISIBLE)
                 cleanEventsDB.invoke()
                 for (objeto in result!!) {
-                    Log.v(logi,"objeto2:"+ objeto.nombre)
+                    Log.v(logi, "objeto2:" + objeto.nombre)
                     insertDBUseCase(
                         EventsEntity(
                             0,
@@ -87,31 +93,31 @@ class MainViewModel @Inject constructor(
                 }
                 val getAllEvent = getAllEventsDBUseCase.invoke()
                 listEvents.postValue(getAllEvent)
-                Log.v(logi,"getAllEvents:"+getAllEvent.size)
+                Log.v(logi, "getAllEvents:" + getAllEvent.size)
             }
             isLoading.postValue(false)
             isLoadingView.postValue(View.GONE)
         }
     }
 
-    fun loadLists(context:Context){
+    fun loadLists(context: Context) {
         isLoading.postValue(true)
         isLoadingView.postValue(View.VISIBLE)
         tinyDB = TinyDB(context)
-        val user = tinyDB.getObject("user",User::class.java)
+        val user = tinyDB.getObject("user", User::class.java)
         viewModelScope.launch {
             val result: ListsResponse? = loadListsUseCase(user._id, context)
             Log.v(logi, "success:" + result)
             isLoading.postValue(false)
             isLoadingView.postValue(View.GONE)
-            if(result!!.isEmpty()){
+            if (result!!.isEmpty()) {
                 listView.postValue(View.GONE)
-            }else{
+            } else {
                 listView.postValue(View.VISIBLE)
                 cleanListsDBUseCase.invoke()
 
-                for (objeto in result!!){
-                    Log.v(logi,"objeto list:"+ objeto.nombre)
+                for (objeto in result!!) {
+                    Log.v(logi, "objeto list:" + objeto.nombre)
                     insertListsDBUseCase(
                         ListsEntity(
                             0,
@@ -128,7 +134,7 @@ class MainViewModel @Inject constructor(
 
                 val getAllList = getAllListsDBUseCase.invoke()
                 listLists.postValue(getAllList)
-                Log.v(logi,"getAllLists:"+getAllList.size)
+                Log.v(logi, "getAllLists:" + getAllList.size)
             }
         }
     }
@@ -137,27 +143,44 @@ class MainViewModel @Inject constructor(
         nombre: String,
         estado: String,
         id_event: String,
-        referencia: String){
+        referencia: String
+    ) {
         viewModelScope.launch {
-            val result: InsertListResponse? = insertListRetrofitUseCase.invoke(nombre, estado, id_event, referencia)
+            val result: InsertListResponse? =
+                insertListRetrofitUseCase.invoke(nombre, estado, id_event, referencia)
             isInsert.postValue(true)
             Log.v(logi, "success:" + result)
-            if (result!!.success){
+            if (result!!.success) {
                 isInsert.postValue(false)
                 Log.v(logi, "success:" + result)
-                insertListsDBUseCase.invoke(ListsEntity(
-                    0,
-                    result!!._id,
-                    result!!.__v,
-                    result!!.cant,
-                    result!!.nombre,
-                    result!!.referencia,
-                    result!!.estado,
-                    result!!.id_user
-                ))
+                insertListsDBUseCase.invoke(
+                    ListsEntity(
+                        0,
+                        result!!._id,
+                        result!!.__v,
+                        result!!.cant,
+                        result!!.nombre,
+                        result!!.referencia,
+                        result!!.estado,
+                        result!!.id_user
+                    )
+                )
                 val getAllList = getAllListsDBUseCase.invoke()
                 listLists.postValue(getAllList)
             }
         }
     }
+
+    fun inserEventRetrofit(nombre: String, file: File) {
+        viewModelScope.launch {
+            val result: InsertEventResponse? = insertEventRetrofitUseCase.invoke(nombre, file)
+            Log.v(logi, "success:" + result)
+        }
+    }
+
+    fun getInfoEventById(id:String): EventsEntity? {
+        return getEventByIdUserCase.invoke(id)
+    }
+
+
 }
