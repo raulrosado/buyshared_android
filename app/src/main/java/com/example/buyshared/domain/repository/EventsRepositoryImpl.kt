@@ -29,6 +29,11 @@ class EventsRepositoryImpl @Inject constructor(
         dao.insertAll(listEvents)
     }
 
+    override fun getById(id: String): EventsEntity {
+        Log.v("buyshared","id seleccionado:"+id)
+        return dao.getById(id)
+    }
+
     override suspend fun getAllEvents(): List<EventsEntity> {
         return dao.getAll()
     }

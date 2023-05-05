@@ -14,4 +14,6 @@ interface EventsRepository {
     suspend fun getAllEvents():List<EventsEntity>
 
     suspend fun insertAll(listEvents:List<EventsEntity>)
+
+    fun getById(id:String):EventsEntity
 }

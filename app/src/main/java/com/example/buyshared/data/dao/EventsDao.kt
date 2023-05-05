@@ -23,4 +23,7 @@ interface EventsDao {
     @Query("Select * From Events")
     suspend fun getAll() : List<EventsEntity>
 
+    @Query("Select * from Events where _id=:id")
+    fun getById(id:String): EventsEntity
+
 }

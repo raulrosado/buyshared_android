@@ -24,4 +24,6 @@ interface ListasDao {
     @Query("Select * From Lists")
     suspend fun getAll() : List<ListsEntity>
 
+    @Query("Select * from Lists where _id=:id")
+    fun getById(id:String): ListsEntity
 }

@@ -3,11 +3,14 @@ package com.example.buyshared.di
 import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
+import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepository
+import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.InsertListRepository
 import com.example.buyshared.domain.repository.remote.InsertListRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoadEventRepository
@@ -59,12 +62,24 @@ object RetrofitHelper {
 
     @Provides
     @Singleton
-    fun provideLoadEventRetrofit2(app: Application): Retrofit {
+    fun provideRetrofitv2(app: Application): Retrofit {
         var tinyDB = TinyDB(app)
         var server = tinyDB.getString("server")
         var token = tinyDB.getString("token")
         return Retrofit.Builder()
             .baseUrl(server + "v2/api/")
+            .client(interceptorFun(token!!))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+    @Provides
+    @Singleton
+    fun provideRetrofitv1(app: Application): Retrofit {
+        var tinyDB = TinyDB(app)
+        var server = tinyDB.getString("server")
+        var token = tinyDB.getString("token")
+        return Retrofit.Builder()
+            .baseUrl(server + "v1/api/")
             .client(interceptorFun(token!!))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -130,52 +145,28 @@ object RetrofitHelper {
     @Provides
     @Singleton
     fun provideLoadEventRetrofic(app: Application): LoadEventRepository {
-        var api = provideLoadEventRetrofit2(app).create(LoadEventsApi::class.java)
+        var api = provideRetrofitv2(app).create(LoadEventsApi::class.java)
         return LoadEventRepositoryImpl(api)
     }
     @Provides
     @Singleton
     fun provideLoadListsRetrofic(app: Application): LoadListsRepository {
-        var api = provideLoadEventRetrofit2(app).create(LoadListsApi::class.java)
+        var api = provideRetrofitv2(app).create(LoadListsApi::class.java)
         return LoadListsRepositoryImpl(api)
     }
 
     @Provides
     @Singleton
     fun provideInsertListsRetrofic(app: Application): InsertListRepository {
-        var api = provideLoadEventRetrofit2(app).create(InsertListApiClient::class.java)
+        var api = provideRetrofitv2(app).create(InsertListApiClient::class.java)
         return InsertListRepositoryImpl(api)
     }
-//
-//    @Provides
-//    @Singleton
-//    fun provideLoadChoferRetrofic(app: Application): LoadChoferesRepository {
-//        var api = provideRetrofit(app).create(LoadChoferesApiClient::class.java)
-//        return LoadChoferesRepositoryImpl(api)
-//    }
 
+    @Provides
+    @Singleton
+    fun provideInsertEventsRetrofic(app: Application): InsertEventRetrofitRepository {
+        var api = provideRetrofitv1(app).create(InsertEventApiClient::class.java)
+        return InsertEventRetrofitRepositoryImpl(api)
+    }
 
-//    @Provides
-//    @Singleton
-//    fun provideRegistroRepository(api: RegistroApiClient): RegistroRepository {
-//        return RegistroRepositoryImpl(api)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideOlvidoRepository(api: OlvidoApiClient): OlvidoRepository {
-//        return OlvidoRepositoryImpl(api)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideLoadPlacesRepository(api: GetPlacesApiClient): LoadPlacesRepository {
-//        return LoadPlacesRepositoryImpl(api)
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideAddPlacesRepository(api: ApiPlaceClient): SendPlaceToFavoritRepository {
-//        return SendPlaceToFavoritRepositoryImpl(api)
-//    }
 }
