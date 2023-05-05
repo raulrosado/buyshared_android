@@ -7,6 +7,8 @@ import com.example.buyshared.domain.repository.EventsRepository
 import com.example.buyshared.domain.repository.EventsRepositoryImpl
 import com.example.buyshared.domain.repository.ListsRepository
 import com.example.buyshared.domain.repository.ListsRepositoryImpl
+import com.example.buyshared.domain.repository.TasksRepository
+import com.example.buyshared.domain.repository.TasksRepositoryImpl
 import com.example.buyshared.domain.repository.UserRepository
 import com.example.buyshared.domain.repository.UserReposityImpl
 import dagger.Module
@@ -44,5 +46,10 @@ object AppModule {
     @Singleton
     fun provideListRepository(db: db): ListsRepository {
         return ListsRepositoryImpl(db.getListsDao())
+    }
+    @Provides
+    @Singleton
+    fun provideTasksRepository(db: db): TasksRepository {
+        return TasksRepositoryImpl(db.getTaskDao())
     }
 }

@@ -19,6 +19,7 @@ import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
 import com.example.buyshared.domain.usecase.GetListByIdUserCase
+import com.example.buyshared.domain.usecase.InserTaskDBUserCase
 import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
@@ -26,6 +27,7 @@ import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventUseCase
 import com.example.buyshared.domain.usecase.LoadListTaskRetrofitUserCase
 import com.example.buyshared.domain.usecase.LoadListsUseCase
+import com.example.buyshared.domain.usecase.LoadTaskByIdListUserCase
 import com.example.buyshared.domain.usecase.getAllEventsDBUseCase
 import com.example.buyshared.domain.usecase.getAllListsDBUseCase
 import com.example.buyshared.ui.Activity.TinyDB
@@ -50,7 +52,9 @@ class MainViewModel @Inject constructor(
     private val insertEventRetrofitUseCase: InsetEventRetrofitUseCase,
     private val getEventByIdUserCase: GetEventByIdUserCase,
     private val getListByIdUserCase: GetListByIdUserCase,
-    private val loadListTaskRetrofitUserCase: LoadListTaskRetrofitUserCase
+    private val loadListTaskRetrofitUserCase: LoadListTaskRetrofitUserCase,
+    private val insertTaskDBUserCase: InserTaskDBUserCase,
+    private val loadTaskByIdListUserCase: LoadTaskByIdListUserCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
@@ -199,22 +203,14 @@ class MainViewModel @Inject constructor(
             val result: LoadListDetailResponse? = loadListTaskRetrofitUserCase.invoke(idList)
             Log.v(logi, "success:" + result)
             isLoadTask.postValue(false)
+            for (task in result!!.tasks) {
+                Log.v(logi, "task:" + task.texto)
+                insertTaskDBUserCase.invoke(task.toTaskEntity())
+            }
 
-//            insertListsDBUseCase.invoke(
-//                ListsEntity(
-//                    0,
-//                    result!!._id,
-//                    result!!.__v,
-//                    result!!.cant,
-//                    result!!.nombre,
-//                    result!!.referencia,
-//                    result!!.estado,
-//                    result!!.id_user
-//                )
-//            )
-//            val getAllList = getAllListsDBUseCase.invoke()
-//            listLists.postValue(getAllList)
 
+            val listTask = loadTaskByIdListUserCase.invoke(idList)
+            Log.v(logi, "cantidad de tareas:"+listTask.size)
         }
     }
 }
