@@ -9,7 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.buyshared.R
+import com.example.buyshared.adapter.AvatarAdapter
+import com.example.buyshared.adapter.ListsAdapter
+import com.example.buyshared.adapter.TasksAdapter
 import com.example.buyshared.databinding.FragmentDetailBinding
 import com.example.buyshared.databinding.FragmentEventDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
@@ -88,6 +92,21 @@ class DetailFragment : Fragment() {
             }else{
                 binding.loadListDetail.visibility = View.GONE
             }
+        })
+
+        val recyclerTaskListDetail = binding.recyclerTaskListDetail
+        recyclerTaskListDetail.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val recyclerAvatarsListDetail = binding.recyclerAvatarList
+        recyclerAvatarsListDetail.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        mainViewModel.listTasks.observe(viewLifecycleOwner,{
+            recyclerTaskListDetail.adapter = TasksAdapter(it,requireActivity())
+        })
+
+        mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
+            recyclerAvatarsListDetail.adapter = AvatarAdapter(it,requireActivity())
         })
     }
 

@@ -106,7 +106,6 @@ class MainFragment : Fragment() {
                 //no imagen
                 Log.v(logi,"No Seleccionada")
             }
-
         }
 
         bottomSheetDialog = BottomSheetDialog(requireContext())

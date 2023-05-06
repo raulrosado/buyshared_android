@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.ListsEntity
+import com.example.buyshared.data.model.TaskEntity
+import com.example.buyshared.data.retrofitObjet.Avatar
 import com.example.buyshared.data.retrofitObjet.EventsResponse
 import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
@@ -17,6 +19,8 @@ import com.example.buyshared.data.retrofitObjet.LoginResponse
 import com.example.buyshared.data.retrofitObjet.User
 import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
+import com.example.buyshared.domain.usecase.CleanTasksDBUserCase
+import com.example.buyshared.domain.usecase.DelTasksDBByIdListUserCase
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
 import com.example.buyshared.domain.usecase.GetListByIdUserCase
 import com.example.buyshared.domain.usecase.InserTaskDBUserCase
@@ -54,7 +58,9 @@ class MainViewModel @Inject constructor(
     private val getListByIdUserCase: GetListByIdUserCase,
     private val loadListTaskRetrofitUserCase: LoadListTaskRetrofitUserCase,
     private val insertTaskDBUserCase: InserTaskDBUserCase,
-    private val loadTaskByIdListUserCase: LoadTaskByIdListUserCase
+    private val loadTaskByIdListUserCase: LoadTaskByIdListUserCase,
+    private val cleanTasksDBUserCase: CleanTasksDBUserCase,
+    private val delTasksDBByIdListUserCase: DelTasksDBByIdListUserCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
@@ -67,6 +73,8 @@ class MainViewModel @Inject constructor(
     val listLists = MutableLiveData<List<ListsEntity>>()
     val isInsert = MutableLiveData<Boolean>()
     val isLoadTask = MutableLiveData<Boolean>()
+    val listTasks = MutableLiveData<List<TaskEntity>>()
+    val listAvatarsList = MutableLiveData<List<Avatar>>()
 
     fun loadEventos(context: Context) {
         isLoading.postValue(true)
@@ -203,13 +211,17 @@ class MainViewModel @Inject constructor(
             val result: LoadListDetailResponse? = loadListTaskRetrofitUserCase.invoke(idList)
             Log.v(logi, "success:" + result)
             isLoadTask.postValue(false)
+            delTasksDBByIdListUserCase(idList)
+
             for (task in result!!.tasks) {
                 Log.v(logi, "task:" + task.texto)
                 insertTaskDBUserCase.invoke(task.toTaskEntity())
             }
 
+            listAvatarsList.postValue(result!!.avatarList)
 
             val listTask = loadTaskByIdListUserCase.invoke(idList)
+            listTasks.postValue(listTask)
             Log.v(logi, "cantidad de tareas:"+listTask.size)
         }
     }

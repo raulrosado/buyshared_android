@@ -22,6 +22,9 @@ interface TaskDao {
     @Query("Select * from Task where id_lista =:id")
     fun getTasksByIdList(id:String):List<TaskEntity>
 
+    @Query("Delete from Task where id_lista =:id")
+    fun delTasksByIdList(id:String)
+
     @Query("Select * from Task")
     fun getAllTasks():List<TaskEntity>
 }

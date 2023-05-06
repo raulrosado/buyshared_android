@@ -36,5 +36,9 @@ class TasksRepositoryImpl @Inject constructor(
         return dao.getTasksByIdList(id)
     }
 
+    override fun delTasksByIdList(id: String) {
+        dao.delTasksByIdList(id)
+    }
+
 
 }

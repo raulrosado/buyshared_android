@@ -66,4 +66,5 @@
     <string name="selectforgalery">Seleccione desde la galeria</string>
     <string name="addNote">Agregar nota</string>
     <string name="miembros">Miembros:</string>
+    <string name="delete">Eliminar</string>
 </resources>
