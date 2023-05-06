@@ -5,11 +5,14 @@ import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
+import com.example.buyshared.data.remote.services.LoadEventTasksApi
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
 import com.example.buyshared.data.remote.services.LoadListsTasksApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.domain.repository.remote.EventsRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.EventsRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepository
 import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.InsertListRepository
@@ -176,6 +179,13 @@ object RetrofitHelper {
     fun provideLoadTaskListRetrofic(app: Application): LoadListsTasksRepository {
         var api = provideRetrofitv1(app).create(LoadListsTasksApi::class.java)
         return LoadListsTasksRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventsRetrofic(app: Application): EventsRepositoryRetrofit {
+        var api = provideRetrofitv1(app).create(LoadEventTasksApi::class.java)
+        return EventsRepositoryRetrofitImpl(api)
     }
 
 }

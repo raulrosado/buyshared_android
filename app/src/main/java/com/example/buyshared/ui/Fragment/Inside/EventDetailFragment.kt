@@ -9,8 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.buyshared.R
+import com.example.buyshared.adapter.AvatarAdapter
+import com.example.buyshared.adapter.TasksAdapter
 import com.example.buyshared.databinding.FragmentEventDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
@@ -80,6 +83,30 @@ class EventDetailFragment : Fragment() {
 
         binding.titleEvent.text = infoEvent!!.nombre
         Glide.with(requireContext()).load("https://buyshare.onrender.com/images/"+infoEvent.bg).into(binding.imgBGEvent);
+
+        mainViewModel.loadEventDetail(idEvent.toString())
+        val recyclerTaskEventDetail = binding.recyclerTaskEventDetail
+        recyclerTaskEventDetail.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        val recyclerAvatarsListDetail = binding.recyclerAvatarList
+        recyclerAvatarsListDetail.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+        mainViewModel.listTasks.observe(viewLifecycleOwner,{
+            recyclerTaskEventDetail.adapter = TasksAdapter(it,requireActivity())
+        })
+
+        mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
+            recyclerAvatarsListDetail.adapter = AvatarAdapter(it,requireActivity())
+        })
+
+        mainViewModel.isLoadEvent.observe(viewLifecycleOwner,{
+            if(it){
+                binding.loadEventDetail.visibility = View.VISIBLE
+            }else{
+                binding.loadEventDetail.visibility = View.GONE
+            }
+        })
     }
 
     companion object {

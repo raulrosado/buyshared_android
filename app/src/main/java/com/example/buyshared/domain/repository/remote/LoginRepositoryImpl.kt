@@ -23,7 +23,6 @@ class LoginRepositoryImpl @Inject constructor(
             response = apiRetrofit.postLoginRequest(email, password)
             Log.v("buysharedLog", "response:"+response.toString())
         } catch (e: HttpException) {
-//            response= LoginResponse()
             Log.v("buysharedLog", "Error, problema en la consulta")
         } catch (e: IOException) {
             e.printStackTrace()

@@ -15,6 +15,9 @@ interface TasksRepository {
     suspend fun getAllTasks():List<TaskEntity>
 
     fun getByIdList(id:String):List<TaskEntity>
+    fun getByIdEvent(id:String):List<TaskEntity>
 
     fun delTasksByIdList(id:String)
+
+    fun delTaskByIdEvent(id:String)
 }
