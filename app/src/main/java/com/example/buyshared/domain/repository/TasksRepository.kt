@@ -1,6 +1,5 @@
 package com.example.buyshared.domain.repository
 
-import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.TaskEntity
 
 interface TasksRepository {
@@ -20,4 +19,6 @@ interface TasksRepository {
     fun delTasksByIdList(id:String)
 
     fun delTaskByIdEvent(id:String)
+
+    fun completTask(id: String, estado: Int)
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,6 @@ import com.example.buyshared.databinding.FragmentEventDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -93,11 +93,11 @@ class EventDetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         mainViewModel.listTasks.observe(viewLifecycleOwner,{
-            recyclerTaskEventDetail.adapter = TasksAdapter(it,requireActivity())
+            recyclerTaskEventDetail.adapter = TasksAdapter(it, requireActivity(), mainViewModel)
         })
 
         mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
-            recyclerAvatarsListDetail.adapter = AvatarAdapter(it,requireActivity())
+            recyclerAvatarsListDetail.adapter = AvatarAdapter(it, requireActivity())
         })
 
         mainViewModel.isLoadEvent.observe(viewLifecycleOwner,{
@@ -105,6 +105,13 @@ class EventDetailFragment : Fragment() {
                 binding.loadEventDetail.visibility = View.VISIBLE
             }else{
                 binding.loadEventDetail.visibility = View.GONE
+            }
+        })
+
+        mainViewModel.positionEdit.observe(viewLifecycleOwner,{
+            if(it !== null) {
+                Log.v(logi, "position:" + mainViewModel.positionEdit.value)
+                recyclerTaskEventDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel)
             }
         })
     }

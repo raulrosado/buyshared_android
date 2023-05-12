@@ -3,6 +3,7 @@ package com.example.buyshared.di
 import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
+import com.example.buyshared.data.remote.services.CompletTaskApi
 import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
 import com.example.buyshared.data.remote.services.LoadEventTasksApi
@@ -27,6 +28,8 @@ import com.example.buyshared.domain.repository.remote.LoginRepository
 import com.example.buyshared.domain.repository.remote.LoginRepositoryImpl
 import com.example.buyshared.domain.repository.remote.RegisterRepository
 import com.example.buyshared.domain.repository.remote.RegisterRepositoryImpl
+import com.example.buyshared.domain.repository.remote.TaskRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.TaskRepositoryRetrofitImpl
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.Module
 import dagger.Provides
@@ -186,6 +189,13 @@ object RetrofitHelper {
     fun provideEventsRetrofic(app: Application): EventsRepositoryRetrofit {
         var api = provideRetrofitv1(app).create(LoadEventTasksApi::class.java)
         return EventsRepositoryRetrofitImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCompletTaskApiRetrofic(app: Application): TaskRepositoryRetrofit {
+        var api = provideRetrofitv1(app).create(CompletTaskApi::class.java)
+        return TaskRepositoryRetrofitImpl(api)
     }
 
 }

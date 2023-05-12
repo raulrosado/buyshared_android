@@ -1,11 +1,6 @@
 package com.example.buyshared.domain.repository
 
-import android.util.Log
-import com.example.buyshared.data.dao.EventsDao
-import com.example.buyshared.data.dao.ListasDao
 import com.example.buyshared.data.dao.TaskDao
-import com.example.buyshared.data.model.EventsEntity
-import com.example.buyshared.data.model.ListsEntity
 import com.example.buyshared.data.model.TaskEntity
 import javax.inject.Inject
 
@@ -46,5 +41,9 @@ class TasksRepositoryImpl @Inject constructor(
 
     override fun delTaskByIdEvent(id: String) {
         dao.delTasksByIdEvent(id)
+    }
+
+    override fun completTask(id: String, estado: Int) {
+        dao.completTask(id,estado)
     }
 }

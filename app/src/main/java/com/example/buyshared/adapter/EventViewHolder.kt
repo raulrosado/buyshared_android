@@ -38,6 +38,7 @@ class EventViewHolder(
         binding.cardEvent.setOnClickListener {
             Log.v("buysharedLog", "lista seleccionada:" + eventModel.nombre)
             tinyDB.putString("eventSel",eventModel._id)
+            tinyDB.putString("typeSelect","event")
             replaceFragment(
                 R.id.contenedorFragmentPrincipal,
                 EventDetailFragment(),

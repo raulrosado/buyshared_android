@@ -35,16 +35,16 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val result: LoginResponse? = loginUseCase(email, password, context)
             Log.v(logi, "success:" + result)
-            if ((result != null)||(result?.status.toString() != "error")){
+            if (result === null){
+                isLoading.postValue(false)
+                isLogin.postValue(false)
+            } else {
                 Log.v(logi, "success:" + result)
                 isLogin.postValue(true)
                 isLoading.postValue(false)
 
                 tinyDB.putString("token", result?.token.toString())
                 tinyDB.putObject("user", result!!.user)
-            } else {
-                isLoading.postValue(false)
-                isLogin.postValue(false)
             }
         }
     }

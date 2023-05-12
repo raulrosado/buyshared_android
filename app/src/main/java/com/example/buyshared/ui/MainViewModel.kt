@@ -3,6 +3,7 @@ package com.example.buyshared.ui
 import android.content.Context
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,11 +17,13 @@ import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
 import com.example.buyshared.data.retrofitObjet.LoadListDetailResponse
-import com.example.buyshared.data.retrofitObjet.LoginResponse
+import com.example.buyshared.data.retrofitObjet.TaskCompletResponse
 import com.example.buyshared.data.retrofitObjet.User
 import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
 import com.example.buyshared.domain.usecase.CleanTasksDBUserCase
+import com.example.buyshared.domain.usecase.CompletTaskDBUserCase
+import com.example.buyshared.domain.usecase.CompletTaskUseCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdEventUserCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdListUserCase
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
@@ -40,7 +43,6 @@ import com.example.buyshared.domain.usecase.getAllEventsDBUseCase
 import com.example.buyshared.domain.usecase.getAllListsDBUseCase
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -67,9 +69,13 @@ class MainViewModel @Inject constructor(
     private val delTasksDBByIdListUserCase: DelTasksDBByIdListUserCase,
     private val loadEventDetailUseCase: LoadEventDetailUseCase,
     private val loadTaskByIdEventUserCase: LoadTaskByIdEventUserCase,
-    private val delTasksDBByIdEventUserCase: DelTasksDBByIdEventUserCase
+    private val delTasksDBByIdEventUserCase: DelTasksDBByIdEventUserCase,
+    private val completTaskUseCase: CompletTaskUseCase,
+    private val completTaskDBUserCase: CompletTaskDBUserCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
+    val isLoadingTask = MutableLiveData<Boolean>()
+    val isEdited = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
     lateinit var tinyDB: TinyDB
     var logi = "buysharedLog"
@@ -82,6 +88,7 @@ class MainViewModel @Inject constructor(
     val isLoadTask = MutableLiveData<Boolean>()
     val listTasks = MutableLiveData<List<TaskEntity>>()
     val listAvatarsList = MutableLiveData<List<Avatar>>()
+    val positionEdit = MutableLiveData<Int>(null)
 
     fun loadEventos(context: Context) {
         isLoading.postValue(true)
@@ -247,6 +254,35 @@ class MainViewModel @Inject constructor(
             val listTask = loadTaskByIdEventUserCase.invoke(idEvent)
             listTasks.postValue(listTask)
             Log.v(logi, "cantidad de tareas:"+listTask.size)
+        }
+    }
+
+    fun completTask(idTask: String, position: Int, requireActivity: FragmentActivity){
+        isLoadingTask.postValue(true)
+        isEdited.postValue(false)
+        tinyDB = TinyDB(requireActivity)
+        viewModelScope.launch {
+            val result:TaskCompletResponse? = completTaskUseCase(idTask)
+//            Log.v(logi, "success:" + result)
+            if(result!!.success) {
+                isLoadingTask.postValue(false)
+                completTaskDBUserCase(idTask, result!!.estado)
+
+                var id = ""
+                var listTask:List<TaskEntity>
+                if(tinyDB.getString("typeSelect") === "event") {
+                    id = tinyDB.getString("eventSel").toString()
+                    listTask = loadTaskByIdEventUserCase.invoke(id!!)
+                }else{
+                    id = tinyDB.getString("listSel").toString()
+                    listTask = loadTaskByIdListUserCase.invoke(id!!)
+                }
+                listTasks.postValue(listTask)
+
+                positionEdit.postValue(position)
+//                Log.v(logi, "posicion select:" + position)
+                isEdited.postValue(true)
+            }
         }
     }
 

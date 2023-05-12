@@ -28,6 +28,7 @@ class ListsViewHolder(private val view: View, private val parent: ViewGroup,priv
         binding.layoutList.setOnClickListener {
             Log.v("buysharedLog", "lista seleccionada:" + listModel.nombre)
             tinyDB.putString("listSel",listModel._id)
+            tinyDB.putString("typeSelect","list")
             replaceFragment(
                 R.id.contenedorFragmentPrincipal,
                 DetailFragment(),

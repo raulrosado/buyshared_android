@@ -1,25 +1,25 @@
 package com.example.buyshared.ui.Fragment.Inside
 
 import android.app.ProgressDialog
-import android.opengl.Visibility
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.buyshared.R
 import com.example.buyshared.adapter.AvatarAdapter
-import com.example.buyshared.adapter.ListsAdapter
 import com.example.buyshared.adapter.TasksAdapter
 import com.example.buyshared.databinding.FragmentDetailBinding
-import com.example.buyshared.databinding.FragmentEventDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.log
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,6 +46,7 @@ class DetailFragment : Fragment() {
     private var pDialog: ProgressDialog? = null
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
+    var position = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,12 +103,20 @@ class DetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         mainViewModel.listTasks.observe(viewLifecycleOwner,{
-            recyclerTaskListDetail.adapter = TasksAdapter(it,requireActivity())
+            recyclerTaskListDetail.adapter = TasksAdapter(it,requireActivity(),mainViewModel)
         })
 
         mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
             recyclerAvatarsListDetail.adapter = AvatarAdapter(it,requireActivity())
         })
+
+        mainViewModel.positionEdit.observe(viewLifecycleOwner,{
+            if(it !== null) {
+                Log.v(logi, "position:" + mainViewModel.positionEdit.value)
+                recyclerTaskListDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel)
+            }
+        })
+
     }
 
     companion object {

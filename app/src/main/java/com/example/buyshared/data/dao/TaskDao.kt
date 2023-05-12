@@ -1,9 +1,7 @@
 package com.example.buyshared.data.dao
 
 import androidx.room.*
-import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.TaskEntity
-import com.example.buyshared.data.model.UserEntity
 
 @Dao
 interface TaskDao {
@@ -33,4 +31,9 @@ interface TaskDao {
 
     @Query("Select * from Task")
     fun getAllTasks():List<TaskEntity>
+
+    @Query("Update Task Set estado = :estado where _id =:id")
+    fun completTask(id:String, estado: Int)
+
+
 }
