@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.buyshared.data.model.AvatarsEntity
 import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.ListsEntity
 import com.example.buyshared.data.model.TaskEntity
@@ -26,13 +27,18 @@ import com.example.buyshared.domain.usecase.CompletTaskDBUserCase
 import com.example.buyshared.domain.usecase.CompletTaskUseCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdEventUserCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdListUserCase
+import com.example.buyshared.domain.usecase.DeleteAvatarByIdListUseCase
+import com.example.buyshared.domain.usecase.GetAllAvatarsDB
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
 import com.example.buyshared.domain.usecase.GetListByIdUserCase
 import com.example.buyshared.domain.usecase.InserTaskDBUserCase
+import com.example.buyshared.domain.usecase.InsertAvatarsDBUseCase
 import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
 import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
+import com.example.buyshared.domain.usecase.LoadAvatarByIdList
+import com.example.buyshared.domain.usecase.LoadAvatarsListRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventDetailUseCase
 import com.example.buyshared.domain.usecase.LoadEventUseCase
 import com.example.buyshared.domain.usecase.LoadListTaskRetrofitUserCase
@@ -71,7 +77,12 @@ class MainViewModel @Inject constructor(
     private val loadTaskByIdEventUserCase: LoadTaskByIdEventUserCase,
     private val delTasksDBByIdEventUserCase: DelTasksDBByIdEventUserCase,
     private val completTaskUseCase: CompletTaskUseCase,
-    private val completTaskDBUserCase: CompletTaskDBUserCase
+    private val completTaskDBUserCase: CompletTaskDBUserCase,
+    private val loadAvatarsListRetrofitUseCase: LoadAvatarsListRetrofitUseCase,
+    private val insertAvatarsDBUseCase: InsertAvatarsDBUseCase,
+    private val loadAvatarByIdList: LoadAvatarByIdList,
+    private val getAllAvatarsDB: GetAllAvatarsDB,
+    private val deleteAvatarByIdListUseCase: DeleteAvatarByIdListUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
@@ -143,13 +154,13 @@ class MainViewModel @Inject constructor(
             Log.v(logi, "success:" + result)
             isLoading.postValue(false)
             isLoadingView.postValue(View.GONE)
-            if (result!!.isEmpty()) {
+            if (result!!.Lists.isEmpty()) {
                 listView.postValue(View.GONE)
             } else {
                 listView.postValue(View.VISIBLE)
                 cleanListsDBUseCase.invoke()
 
-                for (objeto in result!!) {
+                for (objeto in result!!.Lists) {
                     Log.v(logi, "objeto list:" + objeto.nombre)
                     insertListsDBUseCase(
                         ListsEntity(
@@ -163,6 +174,11 @@ class MainViewModel @Inject constructor(
                             objeto.id_user
                         )
                     )
+                    deleteAvatarByIdListUseCase(objeto._id)
+
+                    for (avatar in objeto.avatars) {
+                        insertAvatarsDBUseCase(avatar.toAvatarEntity())
+                    }
                 }
 
                 val getAllList = getAllListsDBUseCase.invoke()
@@ -172,7 +188,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun insertListRetrofit(nombre: String, estado: String, id_event: String, referencia: String
+    fun insertListRetrofit(
+        nombre: String, estado: String, id_event: String, referencia: String
     ) {
         viewModelScope.launch {
             val result: InsertListResponse? =
@@ -232,15 +249,15 @@ class MainViewModel @Inject constructor(
 
             val listTask = loadTaskByIdListUserCase.invoke(idList)
             listTasks.postValue(listTask)
-            Log.v(logi, "cantidad de tareas:"+listTask.size)
+            Log.v(logi, "cantidad de tareas:" + listTask.size)
         }
     }
 
-    fun loadEventDetail(idEvent:String){
+    fun loadEventDetail(idEvent: String) {
         isLoadEvent.postValue(true)
         viewModelScope.launch {
             isLoadEvent.postValue(false)
-            val result:EventDetailResponse? = loadEventDetailUseCase.invoke(idEvent)
+            val result: EventDetailResponse? = loadEventDetailUseCase.invoke(idEvent)
             Log.v(logi, "success:" + result)
             delTasksDBByIdEventUserCase(idEvent)
 
@@ -253,37 +270,49 @@ class MainViewModel @Inject constructor(
 
             val listTask = loadTaskByIdEventUserCase.invoke(idEvent)
             listTasks.postValue(listTask)
-            Log.v(logi, "cantidad de tareas:"+listTask.size)
+            Log.v(logi, "cantidad de tareas:" + listTask.size)
         }
     }
 
-    fun completTask(idTask: String, position: Int, requireActivity: FragmentActivity){
+    fun completTask(idTask: String, position: Int, requireActivity: FragmentActivity) {
         isLoadingTask.postValue(true)
         isEdited.postValue(false)
         tinyDB = TinyDB(requireActivity)
         viewModelScope.launch {
-            val result:TaskCompletResponse? = completTaskUseCase(idTask)
-//            Log.v(logi, "success:" + result)
-            if(result!!.success) {
+            val result: TaskCompletResponse? = completTaskUseCase(idTask)
+            if (result!!.success) {
                 isLoadingTask.postValue(false)
                 completTaskDBUserCase(idTask, result!!.estado)
 
                 var id = ""
-                var listTask:List<TaskEntity>
-                if(tinyDB.getString("typeSelect") === "event") {
+                var listTask: List<TaskEntity>
+                if (tinyDB.getString("typeSelect") === "event") {
                     id = tinyDB.getString("eventSel").toString()
                     listTask = loadTaskByIdEventUserCase.invoke(id!!)
-                }else{
+                } else {
                     id = tinyDB.getString("listSel").toString()
                     listTask = loadTaskByIdListUserCase.invoke(id!!)
                 }
                 listTasks.postValue(listTask)
 
                 positionEdit.postValue(position)
-//                Log.v(logi, "posicion select:" + position)
                 isEdited.postValue(true)
             }
         }
     }
 
+    fun loadAvatarsListRetrofit() {
+        viewModelScope.launch {
+            val result = loadAvatarsListRetrofitUseCase.invoke()
+            Log.v(logi, "success:" + result)
+        }
+    }
+
+    fun loadAvatarDBByIdList(_id: String):List<AvatarsEntity> {
+        return loadAvatarByIdList(_id)
+    }
+
+    suspend fun getAllAvatarsDBList():List<AvatarsEntity>{
+        return getAllAvatarsDB()
+    }
 }

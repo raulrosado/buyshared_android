@@ -1,21 +1,21 @@
 package com.example.buyshared.domain.repository.remote
 
 import android.util.Log
-import com.example.buyshared.data.remote.services.LoadListsTasksApi
+import com.example.buyshared.data.remote.services.LoadAvatarListApi
+import com.example.buyshared.data.retrofitObjet.LoadAvatarOfListResponse
 import com.example.buyshared.data.retrofitObjet.LoadListDetailResponse
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 import javax.inject.Inject
 
-class LoadListsTasksRepositoryImpl  @Inject constructor(
-    private val apiRetrofit: LoadListsTasksApi
-) : LoadListsTasksRepository {
-
-    override suspend fun loadListsTasksRepository(idList: String): Response<LoadListDetailResponse>? {
-        var response: Response<LoadListDetailResponse>? = null
+class LoadAvatarListRepositoryRetrofitImpl @Inject constructor(
+    private val apiRetrofit:LoadAvatarListApi
+):LoadAvatarListRepositoryRetrofit{
+    override suspend fun loadAvatarsRetrofit(): Response<LoadAvatarOfListResponse>? {
+        var response: Response<LoadAvatarOfListResponse>? = null
         try {
-            response = apiRetrofit.loadListsTasksApi(idList)
+            response = apiRetrofit.getAvatarsList()
             Log.v("buysharedLog", "response:"+response.toString())
         } catch (e: HttpException) {
             Log.v("buysharedLog", "Error, problema en la consulta")

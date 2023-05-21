@@ -66,37 +66,18 @@
             <!-- Buttons -->
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:layout_weight="0.1"
-                android:layout_margin="8dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="-20dp"
-                        android:src="@drawable/avatar" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="-20dp"
-                        android:src="@drawable/avatar" />
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="0dp"
-                        android:src="@drawable/avatar" />
-
-                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerAvatarItemList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    />
             </LinearLayout>
 
         </LinearLayout>

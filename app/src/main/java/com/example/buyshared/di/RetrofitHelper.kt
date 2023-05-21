@@ -6,6 +6,7 @@ import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.CompletTaskApi
 import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
+import com.example.buyshared.data.remote.services.LoadAvatarListApi
 import com.example.buyshared.data.remote.services.LoadEventTasksApi
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.remote.services.LoadListsApi
@@ -18,6 +19,8 @@ import com.example.buyshared.domain.repository.remote.InsertEventRetrofitReposit
 import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.InsertListRepository
 import com.example.buyshared.domain.repository.remote.InsertListRepositoryImpl
+import com.example.buyshared.domain.repository.remote.LoadAvatarListRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.LoadAvatarListRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.LoadEventRepository
 import com.example.buyshared.domain.repository.remote.LoadEventRepositoryImpl
 import com.example.buyshared.domain.repository.remote.LoadListsRepository
@@ -198,4 +201,10 @@ object RetrofitHelper {
         return TaskRepositoryRetrofitImpl(api)
     }
 
+    @Provides
+    @Singleton
+    fun provideAvatarsListsRetrofic(app: Application): LoadAvatarListRepositoryRetrofit {
+        var api = provideRetrofitv2(app).create(LoadAvatarListApi::class.java)
+        return LoadAvatarListRepositoryRetrofitImpl(api)
+    }
 }

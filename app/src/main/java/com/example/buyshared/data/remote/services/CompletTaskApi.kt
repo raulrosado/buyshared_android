@@ -9,6 +9,6 @@ import retrofit2.http.Path
 interface CompletTaskApi {
     @GET("task/complet/{id}")
     suspend fun getTaskComplet(
-        @Path("id") id: String,
+        @Path("id") id: String
     ): Response<TaskCompletResponse>
 }

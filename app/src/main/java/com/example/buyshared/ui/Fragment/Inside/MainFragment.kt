@@ -178,6 +178,7 @@ class MainFragment : Fragment() {
 
         mainViewModel.loadEventos(requireContext())
         mainViewModel.loadLists(requireContext())
+        mainViewModel.loadAvatarsListRetrofit()
 
         mainViewModel.isLoading.observe(viewLifecycleOwner, {
             if (it === true) {
@@ -217,7 +218,7 @@ class MainFragment : Fragment() {
         })
 
         mainViewModel.listLists.observe(viewLifecycleOwner, {
-            recyclerViewList.adapter = ListsAdapter(it,requireActivity())
+            recyclerViewList.adapter = ListsAdapter(it,requireActivity(),mainViewModel)
         })
     }
 

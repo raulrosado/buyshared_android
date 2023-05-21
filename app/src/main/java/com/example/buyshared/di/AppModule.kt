@@ -3,6 +3,8 @@ package com.example.buyshared.di
 import android.content.Context
 import androidx.room.Room
 import com.example.buyshared.data.db.db
+import com.example.buyshared.domain.repository.AvatarsRepository
+import com.example.buyshared.domain.repository.AvatarsRepositoryImpl
 import com.example.buyshared.domain.repository.EventsRepository
 import com.example.buyshared.domain.repository.EventsRepositoryImpl
 import com.example.buyshared.domain.repository.ListsRepository
@@ -51,5 +53,10 @@ object AppModule {
     @Singleton
     fun provideTasksRepository(db: db): TasksRepository {
         return TasksRepositoryImpl(db.getTaskDao())
+    }
+    @Provides
+    @Singleton
+    fun provideAvatarsRepository(db: db): AvatarsRepository {
+        return AvatarsRepositoryImpl(db.getAvatarsDao())
     }
 }
