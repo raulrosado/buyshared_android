@@ -2,6 +2,7 @@ package com.example.buyshared.domain.repository
 
 import com.example.buyshared.data.dao.AvatarsDao
 import com.example.buyshared.data.model.AvatarsEntity
+import com.example.buyshared.data.retrofitObjet.Avatar
 import javax.inject.Inject
 
 class AvatarsRepositoryImpl @Inject constructor(
@@ -19,7 +20,7 @@ class AvatarsRepositoryImpl @Inject constructor(
         dao.delete(avatarsEntity)
     }
 
-    override fun getAvatarsByIdList(id: String): List<AvatarsEntity> {
+    override fun getAvatarsByIdList(id: String): List<Avatar> {
         return dao.selectByIdList(id)
     }
 

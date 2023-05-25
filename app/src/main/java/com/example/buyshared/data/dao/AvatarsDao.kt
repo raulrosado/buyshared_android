@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.buyshared.data.model.AvatarsEntity
+import com.example.buyshared.data.retrofitObjet.Avatar
 
 @Dao
 interface AvatarsDao {
@@ -29,5 +30,5 @@ interface AvatarsDao {
     suspend fun getAllAvatars():List<AvatarsEntity>
 
     @Query("Select * from Avatars where idList = :id")
-    fun selectByIdList(id:String):List<AvatarsEntity>
+    fun selectByIdList(id:String):List<Avatar>
 }

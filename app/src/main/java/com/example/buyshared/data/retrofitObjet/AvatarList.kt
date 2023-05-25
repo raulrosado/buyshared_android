@@ -1,9 +1,8 @@
 package com.example.buyshared.data.retrofitObjet
 
 import com.example.buyshared.data.model.AvatarsEntity
-import com.example.buyshared.data.model.TaskEntity
 
-data class AvatarX(
+data class AvatarList(
     val _id: String,
     val avatar: String,
     val idList: String
@@ -13,7 +12,8 @@ data class AvatarX(
             0,
             _id,
             avatar,
-            idList
+            idList,
+            ""
         )
     }
 }

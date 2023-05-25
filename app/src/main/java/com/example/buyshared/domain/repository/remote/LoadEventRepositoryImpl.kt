@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.buyshared.data.remote.services.LoadEventsApi
 import com.example.buyshared.data.retrofitObjet.EventsResponse
+import com.example.buyshared.data.retrofitObjet.EventsResponse2
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -15,8 +16,8 @@ class LoadEventRepositoryImpl  @Inject constructor(
     override suspend fun loadEventRepository(
         userId: String,
         context: Context
-    ): Response<EventsResponse>? {
-        var response: Response<EventsResponse>? = null
+    ): Response<EventsResponse2>? {
+        var response: Response<EventsResponse2>? = null
         try {
             response = apiRetrofit.getEventsApiClient(userId)
             Log.v("buysharedLog", "response:"+response.toString())
