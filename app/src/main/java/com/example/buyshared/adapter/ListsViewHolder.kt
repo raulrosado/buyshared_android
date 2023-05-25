@@ -41,10 +41,8 @@ class ListsViewHolder(
 
         val avatarsList = mainViewModel.loadAvatarDBByIdList(listModel._id)
         Log.v("buySharedLog", "cantidad avatar"+avatarsList.size)
-//        CoroutineScope(Dispatchers.IO).launch {
-//           val alllist = mainViewModel.getAllAvatarsDBList()
-//           Log.v("buySharedLog", "cantidad avatar"+alllist.size)
-//        }
+        recyclerAvatarsList.adapter = AvatarAdapter(avatarsList,requireActivity)
+
 
         binding.layoutList.setOnClickListener {
             Log.v("buysharedLog", "lista seleccionada:" + listModel.nombre)

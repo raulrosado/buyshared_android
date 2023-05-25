@@ -14,6 +14,7 @@ import com.example.buyshared.data.model.TaskEntity
 import com.example.buyshared.data.retrofitObjet.Avatar
 import com.example.buyshared.data.retrofitObjet.EventDetailResponse
 import com.example.buyshared.data.retrofitObjet.EventsResponse
+import com.example.buyshared.data.retrofitObjet.EventsResponse2
 import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
@@ -37,7 +38,7 @@ import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
 import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
-import com.example.buyshared.domain.usecase.LoadAvatarByIdList
+import com.example.buyshared.domain.usecase.LoadAvatarByIdListUseCase
 import com.example.buyshared.domain.usecase.LoadAvatarsListRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventDetailUseCase
 import com.example.buyshared.domain.usecase.LoadEventUseCase
@@ -80,7 +81,7 @@ class MainViewModel @Inject constructor(
     private val completTaskDBUserCase: CompletTaskDBUserCase,
     private val loadAvatarsListRetrofitUseCase: LoadAvatarsListRetrofitUseCase,
     private val insertAvatarsDBUseCase: InsertAvatarsDBUseCase,
-    private val loadAvatarByIdList: LoadAvatarByIdList,
+    private val loadAvatarByIdList: LoadAvatarByIdListUseCase,
     private val getAllAvatarsDB: GetAllAvatarsDB,
     private val deleteAvatarByIdListUseCase: DeleteAvatarByIdListUseCase
 ) : ViewModel() {
@@ -107,7 +108,7 @@ class MainViewModel @Inject constructor(
         tinyDB = TinyDB(context)
         val user = tinyDB.getObject("user", User::class.java)
         viewModelScope.launch {
-            val result: EventsResponse? = loadEventUseCase(user._id, context)
+            val result: EventsResponse2? = loadEventUseCase(user._id, context)
             Log.v(logi, "success:" + result)
             Log.v(logi, "cantidad eventos:" + result!!.size)
 
@@ -308,7 +309,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun loadAvatarDBByIdList(_id: String):List<AvatarsEntity> {
+    fun loadAvatarDBByIdList(_id: String):List<Avatar> {
         return loadAvatarByIdList(_id)
     }
 
