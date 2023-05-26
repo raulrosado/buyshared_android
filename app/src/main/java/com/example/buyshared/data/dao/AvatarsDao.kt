@@ -26,9 +26,15 @@ interface AvatarsDao {
     @Query("DELETE FROM Avatars where idList =:id")
     fun deleteById(id:String)
 
+    @Query("DELETE FROM Avatars where idEvent =:id")
+    fun deleteByIdEvent(id:String)
+
     @Query("Select * from Avatars")
     suspend fun getAllAvatars():List<AvatarsEntity>
 
     @Query("Select * from Avatars where idList = :id")
     fun selectByIdList(id:String):List<Avatar>
+
+    @Query("Select * from Avatars where idEvent = :id")
+    fun selectByIdEvent(id:String):List<Avatar>
 }

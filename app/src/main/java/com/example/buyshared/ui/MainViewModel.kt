@@ -28,6 +28,7 @@ import com.example.buyshared.domain.usecase.CompletTaskDBUserCase
 import com.example.buyshared.domain.usecase.CompletTaskUseCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdEventUserCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdListUserCase
+import com.example.buyshared.domain.usecase.DeleteAvatarByIdEventUseCase
 import com.example.buyshared.domain.usecase.DeleteAvatarByIdListUseCase
 import com.example.buyshared.domain.usecase.GetAllAvatarsDB
 import com.example.buyshared.domain.usecase.GetEventByIdUserCase
@@ -38,6 +39,7 @@ import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
 import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
+import com.example.buyshared.domain.usecase.LoadAvatarByIdEventUseCase
 import com.example.buyshared.domain.usecase.LoadAvatarByIdListUseCase
 import com.example.buyshared.domain.usecase.LoadAvatarsListRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadEventDetailUseCase
@@ -83,7 +85,9 @@ class MainViewModel @Inject constructor(
     private val insertAvatarsDBUseCase: InsertAvatarsDBUseCase,
     private val loadAvatarByIdList: LoadAvatarByIdListUseCase,
     private val getAllAvatarsDB: GetAllAvatarsDB,
-    private val deleteAvatarByIdListUseCase: DeleteAvatarByIdListUseCase
+    private val deleteAvatarByIdListUseCase: DeleteAvatarByIdListUseCase,
+    private val deleteAvatarByIdEventUseCase: DeleteAvatarByIdEventUseCase,
+    private val loadAvatarByIdEventUseCase:LoadAvatarByIdEventUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
@@ -119,7 +123,7 @@ class MainViewModel @Inject constructor(
                 eventView.postValue(View.VISIBLE)
                 cleanEventsDB.invoke()
                 for (objeto in result!!) {
-                    Log.v(logi, "objeto2:" + objeto.nombre)
+                    Log.v(logi, "Evento:" + objeto.nombre)
                     insertDBUseCase(
                         EventsEntity(
                             0,
@@ -135,6 +139,12 @@ class MainViewModel @Inject constructor(
                             objeto.taskcomplet.toInt()
                         )
                     )
+                    Log.v(logi,"Event id:"+objeto._id)
+                    deleteAvatarByIdEventUseCase(objeto._id)
+                    for (avatar in objeto.avatars) {
+                        Log.v(logi,"Event avatar id:"+avatar.idEvent)
+                        insertAvatarsDBUseCase(avatar.toAvatarEntity())
+                    }
                 }
                 val getAllEvent = getAllEventsDBUseCase.invoke()
                 listEvents.postValue(getAllEvent)
@@ -311,6 +321,10 @@ class MainViewModel @Inject constructor(
 
     fun loadAvatarDBByIdList(_id: String):List<Avatar> {
         return loadAvatarByIdList(_id)
+    }
+
+    fun loadAvatarDBByIdEvent(_id: String):List<Avatar> {
+        return loadAvatarByIdEventUseCase(_id)
     }
 
     suspend fun getAllAvatarsDBList():List<AvatarsEntity>{

@@ -208,7 +208,7 @@ class MainFragment : Fragment() {
         })
 
         mainViewModel.listEvents.observe(viewLifecycleOwner, {
-            recyclerViewEvent.adapter = EventAdapter(it,requireActivity())
+            recyclerViewEvent.adapter = EventAdapter(it,requireActivity(),mainViewModel)
             Log.v("buysharedLog", "cantidad eventos:" + it.size)
             if (it.size === 0) {
                 binding.layoutEvents.visibility = View.GONE

@@ -24,6 +24,10 @@ class AvatarsRepositoryImpl @Inject constructor(
         return dao.selectByIdList(id)
     }
 
+    override fun getAvatarsByIdEvent(id: String): List<Avatar> {
+        return dao.selectByIdEvent(id)
+    }
+
     override suspend fun getAll(): List<AvatarsEntity> {
         return dao.getAllAvatars()
     }
@@ -34,6 +38,10 @@ class AvatarsRepositoryImpl @Inject constructor(
 
     override fun deleteById(id: String) {
         dao.deleteById(id)
+    }
+
+    override fun deleteByIdEvent(id: String) {
+        dao.deleteByIdEvent(id)
     }
 
 

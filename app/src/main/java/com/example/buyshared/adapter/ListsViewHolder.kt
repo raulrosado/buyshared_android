@@ -43,7 +43,6 @@ class ListsViewHolder(
         Log.v("buySharedLog", "cantidad avatar"+avatarsList.size)
         recyclerAvatarsList.adapter = AvatarAdapter(avatarsList,requireActivity)
 
-
         binding.layoutList.setOnClickListener {
             Log.v("buysharedLog", "lista seleccionada:" + listModel.nombre)
             tinyDB.putString("listSel",listModel._id)

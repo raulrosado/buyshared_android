@@ -12,8 +12,11 @@ interface AvatarsRepository {
     fun delete(avatarsEntity: AvatarsEntity)
     fun getAvatarsByIdList(id:String):List<Avatar>
 
+    fun getAvatarsByIdEvent(id:String):List<Avatar>
+
     suspend fun getAll():List<AvatarsEntity>
     fun deleteAll()
 
     fun deleteById(id:String)
+    fun deleteByIdEvent(id:String)
 }
