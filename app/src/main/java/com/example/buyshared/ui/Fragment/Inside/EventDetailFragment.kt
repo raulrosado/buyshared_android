@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
@@ -19,6 +21,8 @@ import com.example.buyshared.databinding.FragmentEventDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,6 +50,7 @@ class EventDetailFragment : Fragment() {
     private var pDialog: ProgressDialog? = null
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
+    var bottomSheetDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +77,11 @@ class EventDetailFragment : Fragment() {
 
         val idEvent = tinyDB.getString("eventSel")
         val infoEvent = mainViewModel.getInfoEventById(idEvent.toString())
+
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        val viewrutas: View = layoutInflater.inflate(R.layout.addtask, null)
+        bottomSheetDialog!!.setContentView(viewrutas)
+        bottomSheetDialog!!.setCanceledOnTouchOutside(true)
 
         binding.btnBackEvent.setOnClickListener {
             replaceFragment(
@@ -114,6 +124,40 @@ class EventDetailFragment : Fragment() {
                 recyclerTaskEventDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel)
             }
         })
+
+        binding.btnAddArticulo.setOnClickListener {
+            bottomSheetDialog!!.show()
+        }
+
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
+            bottomSheetDialog!!.hide()
+        }
+
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
+
+            mainViewModel.addTask(
+                tinyDB.getString("eventSel").toString(),
+                "",
+                tinyDB.getString("eventSel").toString(),
+                bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString()
+            )
+            bottomSheetDialog!!.hide()
+        }
+
+        mainViewModel.isLoading.observe(viewLifecycleOwner,{
+            if(it){
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                    pDialog!!.show()
+                }
+            }else{
+                if (pDialog!!.isShowing) {
+                    pDialog!!.hide()
+                }
+            }
+        })
+
+
     }
 
     companion object {

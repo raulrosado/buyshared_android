@@ -19,6 +19,7 @@ import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
 import com.example.buyshared.data.retrofitObjet.LoadListDetailResponse
+import com.example.buyshared.data.retrofitObjet.Task
 import com.example.buyshared.data.retrofitObjet.TaskCompletResponse
 import com.example.buyshared.data.retrofitObjet.User
 import com.example.buyshared.domain.usecase.CleanEventsDB
@@ -38,6 +39,7 @@ import com.example.buyshared.domain.usecase.InsertAvatarsDBUseCase
 import com.example.buyshared.domain.usecase.InsertDBUseCase
 import com.example.buyshared.domain.usecase.InsertListRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsertListsDBUseCase
+import com.example.buyshared.domain.usecase.InsertTaskRetrofitUseCase
 import com.example.buyshared.domain.usecase.InsetEventRetrofitUseCase
 import com.example.buyshared.domain.usecase.LoadAvatarByIdEventUseCase
 import com.example.buyshared.domain.usecase.LoadAvatarByIdListUseCase
@@ -87,7 +89,8 @@ class MainViewModel @Inject constructor(
     private val getAllAvatarsDB: GetAllAvatarsDB,
     private val deleteAvatarByIdListUseCase: DeleteAvatarByIdListUseCase,
     private val deleteAvatarByIdEventUseCase: DeleteAvatarByIdEventUseCase,
-    private val loadAvatarByIdEventUseCase:LoadAvatarByIdEventUseCase
+    private val loadAvatarByIdEventUseCase:LoadAvatarByIdEventUseCase,
+    private val insertTaskRetrofitUseCase: InsertTaskRetrofitUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
@@ -329,5 +332,21 @@ class MainViewModel @Inject constructor(
 
     suspend fun getAllAvatarsDBList():List<AvatarsEntity>{
         return getAllAvatarsDB()
+    }
+
+    fun addTask(idEvent: String,
+                idList: String,
+                referencia: String,
+                task: String){
+        isLoading.postValue(true)
+        viewModelScope.launch {
+            val result: Task? = insertTaskRetrofitUseCase(idEvent, idList, referencia, task)
+            insertTaskDBUserCase.invoke(result!!.toTaskEntity())
+            isLoading.postValue(false)
+
+            val listTask = loadTaskByIdEventUserCase.invoke(idEvent)
+            listTasks.postValue(listTask)
+            Log.v(logi, "cantidad de tareas:" + listTask.size)
+        }
     }
 }

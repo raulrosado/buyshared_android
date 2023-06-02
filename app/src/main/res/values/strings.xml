@@ -67,4 +67,6 @@
     <string name="addNote">Agregar nota</string>
     <string name="miembros">Miembros:</string>
     <string name="delete">Eliminar</string>
+    <string name="addTask">Agregar Articulo</string>
+    <string name="addArticulo">Agregar Artículo</string>
 </resources>
