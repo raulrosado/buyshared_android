@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/baseline_person_add_alt_1_24"
+        android:title="@string/agregaramigo" />
+    <item
+        android:id="@+id/menu_logout"
+        android:icon="@drawable/baseline_delete_outline_24"
+        android:title="@string/eliminarlista" />
+</menu>

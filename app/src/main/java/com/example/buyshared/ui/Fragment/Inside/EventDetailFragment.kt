@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -83,7 +85,7 @@ class EventDetailFragment : Fragment() {
         bottomSheetDialog!!.setContentView(viewrutas)
         bottomSheetDialog!!.setCanceledOnTouchOutside(true)
 
-        binding.btnBackEvent.setOnClickListener {
+        binding.includeNavBar.btnBackEvent.setOnClickListener {
             replaceFragment(
                 R.id.contenedorFragmentPrincipal,
                 MainFragment(),
@@ -125,7 +127,7 @@ class EventDetailFragment : Fragment() {
             }
         })
 
-        binding.btnAddArticulo.setOnClickListener {
+        binding.includeNavBar.btnAddListTask.setOnClickListener {
             bottomSheetDialog!!.show()
         }
 
@@ -134,7 +136,6 @@ class EventDetailFragment : Fragment() {
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
-
             mainViewModel.addTask(
                 tinyDB.getString("eventSel").toString(),
                 "",
@@ -157,7 +158,38 @@ class EventDetailFragment : Fragment() {
             }
         })
 
+        binding.includeNavBar.btnOptions.setOnClickListener {
+            showMenu(it, R.menu.optiondetail)
+        }
 
+
+    }
+
+    private fun showMenu(it: View?, @MenuRes menuRes: Int) {
+        val popupMenu = PopupMenu(context, it)
+        // Inflating popup menu from popup_menu.xml file
+        popupMenu.menuInflater.inflate(menuRes, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_setting -> {
+                    // Respond to context menu item 1 click.
+                    replaceFragment(
+                        R.id.contenedorFragmentPrincipal,
+                        SettingFragment(),
+                        fragmentTransaction
+                    )
+                    true
+                }
+
+                R.id.menu_logout -> {
+                    Toast.makeText(context, "logout", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
+            true
+        }
+        // Showing the popup menu
+        popupMenu.show()
     }
 
     companion object {

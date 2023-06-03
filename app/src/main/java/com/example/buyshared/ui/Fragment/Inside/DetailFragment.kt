@@ -7,7 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,6 +21,8 @@ import com.example.buyshared.databinding.FragmentDetailBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.log
 
@@ -47,6 +52,7 @@ class DetailFragment : Fragment() {
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
     var position = 0
+    var bottomSheetDialog: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,7 +82,12 @@ class DetailFragment : Fragment() {
         val idList = tinyDB.getString("listSel")
         val infoList = mainViewModel.getInfoListById(idList.toString())
 
-        binding.btnBack.setOnClickListener {
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        val viewrutas: View = layoutInflater.inflate(R.layout.addtask, null)
+        bottomSheetDialog!!.setContentView(viewrutas)
+        bottomSheetDialog!!.setCanceledOnTouchOutside(true)
+
+        binding.includeNavBar.btnBackEvent.setOnClickListener {
             replaceFragment(
                 R.id.contenedorFragmentPrincipal,
                 MainFragment(),
@@ -117,6 +128,55 @@ class DetailFragment : Fragment() {
             }
         })
 
+        binding.includeNavBar.btnAddListTask.setOnClickListener {
+            bottomSheetDialog!!.show()
+        }
+
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
+            bottomSheetDialog!!.hide()
+        }
+
+        bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
+            mainViewModel.addTask(
+                "",
+                tinyDB.getString("listSel").toString(),
+                tinyDB.getString("listSel").toString(),
+                bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString()
+            )
+            bottomSheetDialog!!.hide()
+        }
+
+        binding.includeNavBar.btnOptions.setOnClickListener {
+            showMenu(it, R.menu.optiondetail)
+        }
+
+    }
+
+    private fun showMenu(it: View?, @MenuRes menuRes: Int) {
+        val popupMenu = PopupMenu(context, it)
+        // Inflating popup menu from popup_menu.xml file
+        popupMenu.menuInflater.inflate(menuRes, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_setting -> {
+                    // Respond to context menu item 1 click.
+                    replaceFragment(
+                        R.id.contenedorFragmentPrincipal,
+                        SettingFragment(),
+                        fragmentTransaction
+                    )
+                    true
+                }
+
+                R.id.menu_logout -> {
+                    Toast.makeText(context, "logout", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
+            true
+        }
+        // Showing the popup menu
+        popupMenu.show()
     }
 
     companion object {

@@ -91,6 +91,9 @@ class MainFragment : Fragment() {
         pDialog = ProgressDialog(requireContext());
         pDialog!!.setCancelable(true);
 
+        tinyDB.remove("listSel");
+        tinyDB.remove("eventSel");
+
         val tinyInfo = JSONObject(tinyDB.getString("user").toString())
         binding.UserName.text = tinyInfo.getString("name")
         binding.UserLastName.text = tinyInfo.getString("apellidos")
@@ -116,6 +119,7 @@ class MainFragment : Fragment() {
         binding.btnOptions.setOnClickListener {
             showMenu(it, R.menu.option)
         }
+
         binding.btnAddList.setOnClickListener {
             bottomSheetDialog!!.show()
         }

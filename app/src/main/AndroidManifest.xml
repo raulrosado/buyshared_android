@@ -24,6 +24,7 @@
 
         <activity
             android:name=".ui.Activity.Principal"
+            android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".ui.Activity.MainActivity"
