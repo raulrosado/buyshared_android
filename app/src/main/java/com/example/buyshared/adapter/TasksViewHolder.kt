@@ -16,7 +16,8 @@ class TasksViewHolder(
     private val view: View,
     private val parent: ViewGroup,
     private val requireActivity: FragmentActivity,
-    private val mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel,
+    private val mostrar: String
 ) :
     RecyclerView.ViewHolder(view) {
     val binding = ItemTaskBinding.bind(view)
@@ -35,6 +36,10 @@ class TasksViewHolder(
 
         binding.checkBoxComplet.setOnClickListener {
             mainViewModel.completTask(taskModel._id,position,requireActivity)
+        }
+
+        binding.btnDelTask.setOnClickListener {
+            mainViewModel.delTaskRetrofit(taskModel._id,mostrar,taskModel.id_lista,taskModel.id_evento)
         }
     }
 }

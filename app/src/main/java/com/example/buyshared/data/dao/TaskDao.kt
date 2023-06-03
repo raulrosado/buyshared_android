@@ -28,6 +28,8 @@ interface TaskDao {
 
     @Query("Delete from Task where id_evento =:id")
     fun delTasksByIdEvent(id:String)
+    @Query("Delete from Task where _id =:id")
+    fun delTasksById(id:String)
 
     @Query("Select * from Task")
     fun getAllTasks():List<TaskEntity>

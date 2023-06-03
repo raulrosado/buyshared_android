@@ -8,6 +8,7 @@ interface TasksRepository {
     suspend fun update(task:TaskEntity)
 
     suspend fun delete(task:TaskEntity)
+    suspend fun delTasksById(id:String)
 
     suspend fun deleteAll()
 

@@ -24,7 +24,6 @@ import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.math.log
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -114,7 +113,12 @@ class DetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         mainViewModel.listTasks.observe(viewLifecycleOwner,{
-            recyclerTaskListDetail.adapter = TasksAdapter(it,requireActivity(),mainViewModel)
+            recyclerTaskListDetail.adapter = TasksAdapter(
+                it,
+                requireActivity(),
+                mainViewModel,
+                "list"
+            )
         })
 
         mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
@@ -124,12 +128,13 @@ class DetailFragment : Fragment() {
         mainViewModel.positionEdit.observe(viewLifecycleOwner,{
             if(it !== null) {
                 Log.v(logi, "position:" + mainViewModel.positionEdit.value)
-                recyclerTaskListDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel)
+                recyclerTaskListDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel,"list")
             }
         })
 
         binding.includeNavBar.btnAddListTask.setOnClickListener {
             bottomSheetDialog!!.show()
+            bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.setText("")
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
@@ -137,7 +142,7 @@ class DetailFragment : Fragment() {
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
-            mainViewModel.addTask(
+            mainViewModel.addTask("list",
                 "",
                 tinyDB.getString("listSel").toString(),
                 tinyDB.getString("listSel").toString(),
@@ -150,6 +155,18 @@ class DetailFragment : Fragment() {
             showMenu(it, R.menu.optiondetail)
         }
 
+        mainViewModel.isLoading.observe(viewLifecycleOwner,{
+            if(it){
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.cargando));
+                    pDialog!!.show()
+                }
+            }else{
+                if (pDialog!!.isShowing) {
+                    pDialog!!.hide()
+                }
+            }
+        })
     }
 
     private fun showMenu(it: View?, @MenuRes menuRes: Int) {

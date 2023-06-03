@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.fragment.app.FragmentTransaction
@@ -105,7 +104,12 @@ class EventDetailFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
         mainViewModel.listTasks.observe(viewLifecycleOwner,{
-            recyclerTaskEventDetail.adapter = TasksAdapter(it, requireActivity(), mainViewModel)
+            recyclerTaskEventDetail.adapter = TasksAdapter(
+                it,
+                requireActivity(),
+                mainViewModel,
+                "list"
+            )
         })
 
         mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
@@ -123,12 +127,18 @@ class EventDetailFragment : Fragment() {
         mainViewModel.positionEdit.observe(viewLifecycleOwner,{
             if(it !== null) {
                 Log.v(logi, "position:" + mainViewModel.positionEdit.value)
-                recyclerTaskEventDetail.adapter = TasksAdapter(mainViewModel.listTasks.value!!,requireActivity(),mainViewModel)
+                recyclerTaskEventDetail.adapter = TasksAdapter(
+                    mainViewModel.listTasks.value!!,
+                    requireActivity(),
+                    mainViewModel,
+                    "event"
+                )
             }
         })
 
         binding.includeNavBar.btnAddListTask.setOnClickListener {
             bottomSheetDialog!!.show()
+            bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.setText("")
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
@@ -136,7 +146,7 @@ class EventDetailFragment : Fragment() {
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
-            mainViewModel.addTask(
+            mainViewModel.addTask("event",
                 tinyDB.getString("eventSel").toString(),
                 "",
                 tinyDB.getString("eventSel").toString(),
@@ -148,7 +158,7 @@ class EventDetailFragment : Fragment() {
         mainViewModel.isLoading.observe(viewLifecycleOwner,{
             if(it){
                 if (!pDialog!!.isShowing) {
-                    pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                    pDialog!!.setMessage(resources.getString(R.string.cargando));
                     pDialog!!.show()
                 }
             }else{

@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.CompletTaskApi
+import com.example.buyshared.data.remote.services.DelTaskApiClient
 import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
 import com.example.buyshared.data.remote.services.InsertTaskApiClient
@@ -16,6 +17,8 @@ import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofitImpl
+import com.example.buyshared.domain.repository.remote.DelTaskRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.DelTaskRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.EventsRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.EventsRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.InsertEventRetrofitRepository
@@ -216,5 +219,11 @@ object RetrofitHelper {
     fun provideAddTaskRetrofic(app: Application): AddTaskRepositoryRetrofit {
         var api = provideRetrofitv1(app).create(InsertTaskApiClient::class.java)
         return AddTaskRepositoryRetrofitImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideDelTaskRetrofic(app: Application): DelTaskRepositoryRetrofit {
+        var api = provideRetrofitv1(app).create(DelTaskApiClient::class.java)
+        return DelTaskRepositoryRetrofitImpl(api)
     }
 }

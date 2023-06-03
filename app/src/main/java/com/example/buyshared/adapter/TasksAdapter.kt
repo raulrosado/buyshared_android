@@ -11,12 +11,13 @@ import com.example.buyshared.ui.MainViewModel
 class TasksAdapter(
     private val lists: List<TaskEntity>,
     private val requireActivity: FragmentActivity,
-    private val mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel,
+    private val mostrar: String
 ) : RecyclerView.Adapter<TasksViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TasksViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return TasksViewHolder(layoutInflater.inflate(R.layout.item_task,parent,false),parent,requireActivity,mainViewModel)
+        return TasksViewHolder(layoutInflater.inflate(R.layout.item_task,parent,false),parent,requireActivity,mainViewModel,mostrar)
     }
 
     override fun getItemCount(): Int = lists.size

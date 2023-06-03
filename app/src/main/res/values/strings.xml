@@ -35,4 +35,5 @@
     <string name="addArticulo">Agregar Artículo</string>
     <string name="agregaramigo">Agregar Amigo</string>
     <string name="eliminarlista">Eliminar</string>
+    <string name="cargando">Cargando...</string>
 </resources>
