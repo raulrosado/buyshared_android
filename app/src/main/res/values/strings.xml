@@ -36,4 +36,6 @@
     <string name="agregaramigo">Agregar Amigo</string>
     <string name="eliminarlista">Eliminar</string>
     <string name="cargando">Cargando...</string>
+    <string name="addSolicitud">Agregar Amigo</string>
+    <string name="emailPlaholder">example@example.com</string>
 </resources>

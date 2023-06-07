@@ -3,6 +3,7 @@ package com.example.buyshared.ui
 import android.content.Context
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,9 +21,11 @@ import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
 import com.example.buyshared.data.retrofitObjet.ListsResponse
 import com.example.buyshared.data.retrofitObjet.LoadListDetailResponse
+import com.example.buyshared.data.retrofitObjet.SolicitudResponse
 import com.example.buyshared.data.retrofitObjet.Task
 import com.example.buyshared.data.retrofitObjet.TaskCompletResponse
 import com.example.buyshared.data.retrofitObjet.User
+import com.example.buyshared.domain.usecase.AddSolicitudUseCase
 import com.example.buyshared.domain.usecase.CleanEventsDB
 import com.example.buyshared.domain.usecase.CleanListsDBUseCase
 import com.example.buyshared.domain.usecase.CleanTasksDBUserCase
@@ -95,7 +98,8 @@ class MainViewModel @Inject constructor(
     private val loadAvatarByIdEventUseCase: LoadAvatarByIdEventUseCase,
     private val insertTaskRetrofitUseCase: InsertTaskRetrofitUseCase,
     private val delTaskRetrofitUseCase: DelTaskRetrofitUseCase,
-    private val delTaskDBUseCase: DelTaskDBUseCase
+    private val delTaskDBUseCase: DelTaskDBUseCase,
+    private val addSolicitudUseCase: AddSolicitudUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
@@ -363,15 +367,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun delTaskRetrofit(id: String, mostrar: String, idLista: String,idEvent: String) {
+    fun delTaskRetrofit(id: String, mostrar: String, idLista: String, idEvent: String) {
         isLoading.postValue(true)
         viewModelScope.launch {
             val result: DelTaskResponse? = delTaskRetrofitUseCase(id)
             isLoading.postValue(false)
             delTaskDBUseCase(id)
-            Log.v("BuySharedLog","mostrar:"+mostrar)
-            Log.v("BuySharedLog","mostrar lista:"+idLista)
-            Log.v("BuySharedLog","mostrar event:"+idEvent)
+            Log.v("BuySharedLog", "mostrar:" + mostrar)
+            Log.v("BuySharedLog", "mostrar lista:" + idLista)
+            Log.v("BuySharedLog", "mostrar event:" + idEvent)
             if (mostrar === "event") {
                 listTask = loadTaskByIdEventUserCase.invoke(idEvent)
             } else {
@@ -383,4 +387,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun addSolicitud(email: String, idEvent: String, idList: String, context: Context) {
+        isLoading.postValue(true)
+        viewModelScope.launch {
+            val result: SolicitudResponse? = addSolicitudUseCase(email, idEvent, idList)
+            isLoading.postValue(false)
+            Toast.makeText(context, result!!.message, Toast.LENGTH_SHORT).show()
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.example.buyshared.di
 import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
+import com.example.buyshared.data.remote.services.AddSolicitudApiClient
 import com.example.buyshared.data.remote.services.CompletTaskApi
 import com.example.buyshared.data.remote.services.DelTaskApiClient
 import com.example.buyshared.data.remote.services.InsertEventApiClient
@@ -15,6 +16,8 @@ import com.example.buyshared.data.remote.services.LoadListsApi
 import com.example.buyshared.data.remote.services.LoadListsTasksApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitRepository
+import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.DelTaskRepositoryRetrofit
@@ -225,5 +228,11 @@ object RetrofitHelper {
     fun provideDelTaskRetrofic(app: Application): DelTaskRepositoryRetrofit {
         var api = provideRetrofitv1(app).create(DelTaskApiClient::class.java)
         return DelTaskRepositoryRetrofitImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideAddSolicitud(app: Application): AddSolicitudRetrofitRepository {
+        var api = provideRetrofitv1(app).create(AddSolicitudApiClient::class.java)
+        return AddSolicitudRetrofitRepositoryImpl(api)
     }
 }

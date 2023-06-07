@@ -53,7 +53,8 @@ class WelcomeFragment : Fragment() {
         )
 
         if (tinyDB.getString("server") == "") {
-            tinyDB.putString("server", "http://192.168.1.252:4000/")
+//            tinyDB.putString("server", "http://192.168.1.252:4000/")
+            tinyDB.putString("server", "https://buyshare.onrender.com/")
         }
         tinyDB.putInt("slide",1)
 

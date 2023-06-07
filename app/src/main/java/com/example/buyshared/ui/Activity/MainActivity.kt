@@ -13,6 +13,7 @@ import com.example.buyshared.ui.Fragment.WelcomeFragment
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     val replaceFragment = ReplaceFragment()
+    lateinit var tinyDB: TinyDB
     override fun onCreate(savedInstanceState: Bundle?) {
         val screenSplash = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -24,8 +25,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun configInicio() {
+        tinyDB = TinyDB(applicationContext)
+
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         replaceFragment(R.id.contenedorFragment, LoginFragment(), fragmentTransaction)
+
+        if (tinyDB.getString("server") == "") {
+//            tinyDB.putString("server", "https://buyshare.onrender.com/")
+            tinyDB.putString("server", "http://192.168.1.252:4000/")
+        }
+        tinyDB.putInt("slide",1)
     }
 }
 

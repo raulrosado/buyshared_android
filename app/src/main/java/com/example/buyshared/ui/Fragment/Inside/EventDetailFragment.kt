@@ -52,6 +52,7 @@ class EventDetailFragment : Fragment() {
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
     var bottomSheetDialog: BottomSheetDialog? = null
+    var bottomSheetDialogAddSolicitud: BottomSheetDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,9 +81,13 @@ class EventDetailFragment : Fragment() {
         val infoEvent = mainViewModel.getInfoEventById(idEvent.toString())
 
         bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialogAddSolicitud = BottomSheetDialog(requireContext())
         val viewrutas: View = layoutInflater.inflate(R.layout.addtask, null)
+        val viewrutasSolicitud: View = layoutInflater.inflate(R.layout.addsolicitud, null)
         bottomSheetDialog!!.setContentView(viewrutas)
+        bottomSheetDialogAddSolicitud!!.setContentView(viewrutasSolicitud)
         bottomSheetDialog!!.setCanceledOnTouchOutside(true)
+        bottomSheetDialogAddSolicitud!!.setCanceledOnTouchOutside(true)
 
         binding.includeNavBar.btnBackEvent.setOnClickListener {
             replaceFragment(
@@ -145,6 +150,10 @@ class EventDetailFragment : Fragment() {
             bottomSheetDialog!!.hide()
         }
 
+        bottomSheetDialogAddSolicitud!!.findViewById<Button>(R.id.btnCancel)!!.setOnClickListener {
+            bottomSheetDialogAddSolicitud!!.hide()
+        }
+
         bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
             mainViewModel.addTask("event",
                 tinyDB.getString("eventSel").toString(),
@@ -154,6 +163,17 @@ class EventDetailFragment : Fragment() {
             )
             bottomSheetDialog!!.hide()
         }
+
+        bottomSheetDialogAddSolicitud!!.findViewById<Button>(R.id.btnAddSolicitud)!!.setOnClickListener {
+            mainViewModel.addSolicitud(
+                bottomSheetDialogAddSolicitud!!.findViewById<TextInputEditText>(R.id.txtEmailSolicitud)!!.text.toString(),
+                tinyDB.getString("eventSel").toString(),
+                tinyDB.getString("listSel").toString(),
+                requireContext()
+            )
+            bottomSheetDialogAddSolicitud!!.hide()
+        }
+
 
         mainViewModel.isLoading.observe(viewLifecycleOwner,{
             if(it){
@@ -183,11 +203,7 @@ class EventDetailFragment : Fragment() {
             when (menuItem.itemId) {
                 R.id.menu_setting -> {
                     // Respond to context menu item 1 click.
-                    replaceFragment(
-                        R.id.contenedorFragmentPrincipal,
-                        SettingFragment(),
-                        fragmentTransaction
-                    )
+                    bottomSheetDialogAddSolicitud!!.show()
                     true
                 }
 
