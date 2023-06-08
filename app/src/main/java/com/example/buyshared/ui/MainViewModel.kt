@@ -13,6 +13,7 @@ import com.example.buyshared.data.model.EventsEntity
 import com.example.buyshared.data.model.ListsEntity
 import com.example.buyshared.data.model.TaskEntity
 import com.example.buyshared.data.retrofitObjet.Avatar
+import com.example.buyshared.data.retrofitObjet.DelListResponse
 import com.example.buyshared.data.retrofitObjet.DelTaskResponse
 import com.example.buyshared.data.retrofitObjet.EventDetailResponse
 import com.example.buyshared.data.retrofitObjet.EventsResponse
@@ -31,6 +32,8 @@ import com.example.buyshared.domain.usecase.CleanListsDBUseCase
 import com.example.buyshared.domain.usecase.CleanTasksDBUserCase
 import com.example.buyshared.domain.usecase.CompletTaskDBUserCase
 import com.example.buyshared.domain.usecase.CompletTaskUseCase
+import com.example.buyshared.domain.usecase.DelEventUseCase
+import com.example.buyshared.domain.usecase.DelListUseCase
 import com.example.buyshared.domain.usecase.DelTaskDBUseCase
 import com.example.buyshared.domain.usecase.DelTaskRetrofitUseCase
 import com.example.buyshared.domain.usecase.DelTasksDBByIdEventUserCase
@@ -99,7 +102,9 @@ class MainViewModel @Inject constructor(
     private val insertTaskRetrofitUseCase: InsertTaskRetrofitUseCase,
     private val delTaskRetrofitUseCase: DelTaskRetrofitUseCase,
     private val delTaskDBUseCase: DelTaskDBUseCase,
-    private val addSolicitudUseCase: AddSolicitudUseCase
+    private val addSolicitudUseCase: AddSolicitudUseCase,
+    private val delListUseCase: DelListUseCase,
+    private val delEventUseCase: DelEventUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
@@ -108,6 +113,7 @@ class MainViewModel @Inject constructor(
     lateinit var tinyDB: TinyDB
     var logi = "buysharedLog"
     val isLoadEvent = MutableLiveData<Boolean>()
+    val isDel = MutableLiveData<Boolean>()
     val eventView = MutableLiveData<Int>(View.VISIBLE)
     val listView = MutableLiveData<Int>(View.VISIBLE)
     val listEvents = MutableLiveData<List<EventsEntity>>()
@@ -389,10 +395,30 @@ class MainViewModel @Inject constructor(
 
     fun addSolicitud(email: String, idEvent: String, idList: String, context: Context) {
         isLoading.postValue(true)
+        Log.v(logi, "cosas:"+email+"/"+idEvent+"/"+idList)
         viewModelScope.launch {
             val result: SolicitudResponse? = addSolicitudUseCase(email, idEvent, idList)
             isLoading.postValue(false)
             Toast.makeText(context, result!!.message, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun delList(id:String){
+        isLoading.postValue(true)
+        isDel.postValue(false)
+        viewModelScope.launch {
+            val result: DelListResponse? = delListUseCase(id)
+            isLoading.postValue(false)
+            isDel.postValue(true)
+        }
+    }
+    fun delEvent(id:String){
+        isLoading.postValue(true)
+        isDel.postValue(false)
+        viewModelScope.launch {
+            val result: DelListResponse? = delEventUseCase(id)
+            isLoading.postValue(false)
+            isDel.postValue(true)
         }
     }
 }

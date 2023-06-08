@@ -91,8 +91,8 @@ class MainFragment : Fragment() {
         pDialog = ProgressDialog(requireContext());
         pDialog!!.setCancelable(true);
 
-        tinyDB.remove("listSel");
-        tinyDB.remove("eventSel");
+        tinyDB.putString("listSel","0");
+        tinyDB.putString("eventSel","0");
 
         val tinyInfo = JSONObject(tinyDB.getString("user").toString())
         binding.UserName.text = tinyInfo.getString("name")

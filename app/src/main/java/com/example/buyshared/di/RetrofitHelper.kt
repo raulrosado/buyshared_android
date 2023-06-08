@@ -5,6 +5,8 @@ import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.AddSolicitudApiClient
 import com.example.buyshared.data.remote.services.CompletTaskApi
+import com.example.buyshared.data.remote.services.DelEventApi
+import com.example.buyshared.data.remote.services.DelListApi
 import com.example.buyshared.data.remote.services.DelTaskApiClient
 import com.example.buyshared.data.remote.services.InsertEventApiClient
 import com.example.buyshared.data.remote.services.InsertListApiClient
@@ -20,6 +22,10 @@ import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitReposi
 import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofitImpl
+import com.example.buyshared.domain.repository.remote.DelEventRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.DelEventRepositoryRetrofitImpl
+import com.example.buyshared.domain.repository.remote.DelListasRepositoryRetrofit
+import com.example.buyshared.domain.repository.remote.DelListasRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.DelTaskRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.DelTaskRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.EventsRepositoryRetrofit
@@ -234,5 +240,17 @@ object RetrofitHelper {
     fun provideAddSolicitud(app: Application): AddSolicitudRetrofitRepository {
         var api = provideRetrofitv1(app).create(AddSolicitudApiClient::class.java)
         return AddSolicitudRetrofitRepositoryImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideDelList(app: Application): DelListasRepositoryRetrofit {
+        var api = provideRetrofitv1(app).create(DelListApi::class.java)
+        return DelListasRepositoryRetrofitImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideDelEvents(app: Application): DelEventRepositoryRetrofit {
+        var api = provideRetrofitv1(app).create(DelEventApi::class.java)
+        return DelEventRepositoryRetrofitImpl(api)
     }
 }

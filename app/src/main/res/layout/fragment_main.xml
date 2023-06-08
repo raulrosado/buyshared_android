@@ -90,13 +90,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
+            >
 
             <LinearLayout
                 android:id="@+id/layoutEvents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="0.45"
                 android:minHeight="520dp"
                 android:orientation="vertical"
                 android:visibility="@{viewmodel.eventView}"
