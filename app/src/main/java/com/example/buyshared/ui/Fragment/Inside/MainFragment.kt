@@ -1,6 +1,7 @@
 package com.example.buyshared.ui.Fragment.Inside
 
 import android.app.ProgressDialog
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -27,8 +28,10 @@ import com.example.buyshared.R
 import com.example.buyshared.adapter.EventAdapter
 import com.example.buyshared.adapter.ListsAdapter
 import com.example.buyshared.databinding.FragmentMainBinding
+import com.example.buyshared.ui.Activity.MainActivity
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
+import com.example.buyshared.ui.Fragment.LoginFragment
 import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -244,7 +247,11 @@ class MainFragment : Fragment() {
                 }
 
                 R.id.menu_logout -> {
-                    Toast.makeText(context, "logout", Toast.LENGTH_SHORT).show()
+                    tinyDB.remove("user")
+                    tinyDB.remove("token")
+                    tinyDB.remove("eventSel")
+                    tinyDB.remove("listSel")
+                    startActivity(Intent(requireContext(), MainActivity::class.java))
                     true
                 }
             }
@@ -254,24 +261,6 @@ class MainFragment : Fragment() {
         popupMenu.show()
     }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
-        return when (item.itemId) {
-            R.id.menu_setting -> {
-                // Respond to context menu item 1 click.
-                Toast.makeText(context, "setting", Toast.LENGTH_SHORT)
-                true
-            }
-
-            R.id.menu_logout -> {
-                // Respond to context menu item 2 click.
-                Toast.makeText(context, "logout", Toast.LENGTH_SHORT)
-                true
-            }
-
-            else -> super.onContextItemSelected(item)
-        }
-    }
 
     companion object {
         /**

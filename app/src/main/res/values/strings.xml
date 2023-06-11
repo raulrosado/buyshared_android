@@ -38,4 +38,13 @@
     <string name="cargando">Cargando...</string>
     <string name="addSolicitud">Agregar Amigo</string>
     <string name="emailPlaholder">example@example.com</string>
+    <string name="cambiarimagen">Cambiar Imagen</string>
+    <string name="seleccionarImagen">Seleccionar Imagen</string>
+    <string name="infoPersonal">Información Personal</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="name">Nombre</string>
+    <string name="changePassword">Cambiar Constraseña</string>
+    <string name="oldPassw">Antigua Contraseña</string>
+    <string name="newPassword">Nueva Contraseña</string>
+    <string name="intoInfo">Introduzca Información</string>
 </resources>

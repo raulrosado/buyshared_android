@@ -192,6 +192,15 @@ class EventDetailFragment : Fragment() {
             showMenu(it, R.menu.optiondetail)
         }
 
+        mainViewModel.isDel.observe(viewLifecycleOwner,{
+            if(it){
+                replaceFragment(
+                    R.id.contenedorFragmentPrincipal,
+                    MainFragment(),
+                    fragmentTransaction
+                )
+            }
+        })
 
     }
 
@@ -201,14 +210,16 @@ class EventDetailFragment : Fragment() {
         popupMenu.menuInflater.inflate(menuRes, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_setting -> {
+                R.id.menu_addFriend -> {
                     // Respond to context menu item 1 click.
                     bottomSheetDialogAddSolicitud!!.show()
                     true
                 }
 
-                R.id.menu_logout -> {
-                    Toast.makeText(context, "logout", Toast.LENGTH_SHORT).show()
+                R.id.menu_delList -> {
+                    mainViewModel.delEvent(
+                        tinyDB.getString("eventSel").toString()
+                    )
                     true
                 }
             }

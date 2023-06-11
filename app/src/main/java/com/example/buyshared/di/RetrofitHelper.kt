@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import com.example.buyshared.data.remote.HeaderInterceptor
 import com.example.buyshared.data.remote.services.AddSolicitudApiClient
+import com.example.buyshared.data.remote.services.ChangeInfoApi
 import com.example.buyshared.data.remote.services.CompletTaskApi
 import com.example.buyshared.data.remote.services.DelEventApi
 import com.example.buyshared.data.remote.services.DelListApi
@@ -18,10 +19,14 @@ import com.example.buyshared.data.remote.services.LoadListsApi
 import com.example.buyshared.data.remote.services.LoadListsTasksApi
 import com.example.buyshared.data.remote.services.LoginApiClient
 import com.example.buyshared.data.remote.services.RegisterApiClient
+import com.example.buyshared.data.remote.services.UpdateAvatarApi
+import com.example.buyshared.data.remote.services.UpdatePasswordApi
 import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitRepository
 import com.example.buyshared.domain.repository.remote.AddSolicitudRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.AddTaskRepositoryRetrofitImpl
+import com.example.buyshared.domain.repository.remote.ChangeInfoPersonalRetrofitRepository
+import com.example.buyshared.domain.repository.remote.ChangeInfoPersonalRetrofitRepositoryImpl
 import com.example.buyshared.domain.repository.remote.DelEventRepositoryRetrofit
 import com.example.buyshared.domain.repository.remote.DelEventRepositoryRetrofitImpl
 import com.example.buyshared.domain.repository.remote.DelListasRepositoryRetrofit
@@ -252,5 +257,13 @@ object RetrofitHelper {
     fun provideDelEvents(app: Application): DelEventRepositoryRetrofit {
         var api = provideRetrofitv1(app).create(DelEventApi::class.java)
         return DelEventRepositoryRetrofitImpl(api)
+    }
+    @Provides
+    @Singleton
+    fun provideUpdateInfo(app: Application): ChangeInfoPersonalRetrofitRepository {
+        var apiInfo = provideRetrofitv1(app).create(ChangeInfoApi::class.java)
+        var apiPasswordApi = provideRetrofitv1(app).create(UpdatePasswordApi::class.java)
+        var apiAvatar = provideRetrofitv1(app).create(UpdateAvatarApi::class.java)
+        return ChangeInfoPersonalRetrofitRepositoryImpl(apiInfo,apiPasswordApi,apiAvatar)
     }
 }
