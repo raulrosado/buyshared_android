@@ -77,6 +77,7 @@ class LoginFragment : Fragment() {
                 permission.CAMERA,
                 permission.WRITE_EXTERNAL_STORAGE,
                 permission.READ_EXTERNAL_STORAGE,
+                permission.READ_MEDIA_IMAGES,
                 permission.ACCESS_NETWORK_STATE
             )
             .withListener(object : MultiplePermissionsListener {

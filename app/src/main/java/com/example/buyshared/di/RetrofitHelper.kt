@@ -60,6 +60,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -75,10 +76,14 @@ object RetrofitHelper {
         var tinyDB = TinyDB(app)
         var server = tinyDB.getString("server")
         var token = tinyDB.getString("token")
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY})
+
         Log.v("buysharedLog","access token:"+ token)
         return Retrofit.Builder()
             .baseUrl(server + "v1/api/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(httpClient.build())
             .build()
     }
 
@@ -87,7 +92,7 @@ object RetrofitHelper {
             val newRequest: Request = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $token")
                 .build()
-            chain.proceed(newRequest)
+                chain.proceed(newRequest)
         }.build()
     }
 

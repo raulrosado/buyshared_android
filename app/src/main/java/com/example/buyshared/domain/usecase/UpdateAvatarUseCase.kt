@@ -1,17 +1,19 @@
 package com.example.buyshared.domain.usecase
 
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import com.example.buyshared.domain.repository.remote.ChangeInfoPersonalRetrofitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import javax.inject.Inject
 
 class UpdateAvatarUseCase @Inject constructor(
     private val rep:ChangeInfoPersonalRetrofitRepository
 ) {
-    suspend operator fun invoke(file: File){
+    suspend operator fun invoke(uriFile: Uri,context: Activity){
         return withContext(Dispatchers.IO){
-            rep.updateAvatar(file)?.body()
+            rep.updateAvatar(uriFile, context)?.body()
         }
     }
 }

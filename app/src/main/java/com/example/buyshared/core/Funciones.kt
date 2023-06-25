@@ -1,25 +1,15 @@
 package com.example.buyshared.ui.Activity
 
-import android.app.*
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.os.Build
+import android.database.Cursor
+import android.net.Uri
+import android.provider.MediaStore
 import android.util.Log
-import android.view.Window
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat.getSystemService
-import com.google.android.material.button.MaterialButton
-import com.example.buyshared.R
-import com.example.buyshared.ui.Activity.MainActivity
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 
 private val TAG: String = "pideloApp"
@@ -126,3 +116,20 @@ fun getHora(): String? {
 //    // Crear notificación y regresar
 //    return builder.build()
 //}
+fun getRealPathFromURI(contentUri: Uri?, context: Context): String? {
+    var cursor: Cursor? = null
+    val column_index: Int
+    var ruta: String? = null
+    return try {
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        cursor = context.contentResolver.query(contentUri!!, proj, null, null, null)
+        if (cursor != null) {
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            ruta = cursor.getString(column_index)
+        }
+        ruta
+    } finally {
+        cursor?.close()
+    }
+}

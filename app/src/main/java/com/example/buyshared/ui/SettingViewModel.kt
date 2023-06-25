@@ -1,5 +1,8 @@
 package com.example.buyshared.ui
 
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +12,6 @@ import com.example.buyshared.domain.usecase.UpdatePasswordUseCase
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,10 +38,10 @@ class SettingViewModel @Inject constructor(
             isLoading.postValue(false)
         }
     }
-    fun updateAvatar(file: File){
+    fun updateAvatar(uriFile: Uri,context: Activity){
         isLoading.postValue(true)
         viewModelScope.launch {
-            updateAvatarUseCase(file)
+            updateAvatarUseCase(uriFile, context)
             isLoading.postValue(false)
         }
     }

@@ -1,23 +1,26 @@
 package com.example.buyshared.ui.Fragment.Inside
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import com.example.buyshared.R
-import com.example.buyshared.databinding.FragmentDetailBinding
 import com.example.buyshared.databinding.FragmentSettingBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
-import com.example.buyshared.ui.MainViewModel
 import com.example.buyshared.ui.SettingViewModel
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
 
@@ -46,6 +49,7 @@ class SettingFragment : Fragment() {
     private var pDialog: ProgressDialog? = null
     var logi = "buysharedLog"
     lateinit var fragmentTransaction: FragmentTransaction
+    lateinit var uriImagen: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +70,17 @@ class SettingFragment : Fragment() {
         return binding.root
     }
 
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
+        if(uri!= null){
+            //imagen seleccionada
+            Log.v(logi,"imagen seleccionada"+uri)
+            uriImagen = uri
+            binding.avatarPerfil.setImageURI(uri)
+        }else{
+            //no Image
+            Log.v(logi,"imagen NO seleccionada")
+        }
+    }
     private fun inicio() {
         tinyDB = TinyDB(requireContext())
         pDialog = ProgressDialog(requireContext());
@@ -90,6 +105,7 @@ class SettingFragment : Fragment() {
                 binding.nameField.text.toString()
             )
         }
+
         binding.btnUpdatePassw.setOnClickListener {
             if (binding.oldPassword.text!!.isEmpty() || binding.newPass.text!!.isEmpty() || binding.newRepetPass.text!!.isEmpty()) {
                 Toast.makeText(requireContext(), getString(R.string.intoInfo), Toast.LENGTH_SHORT)
@@ -116,6 +132,40 @@ class SettingFragment : Fragment() {
             }
         })
 
+//        val startForActivityResultGallery = registerForActivityResult(
+//            ActivityResultContracts.StartActivityForResult()
+//        ) {
+//            if (it.resultCode == Activity.RESULT_OK) {
+//                Log.v(logi,"it:"+it)
+//                Log.v(logi,"it:"+it.data!!.data)
+//                val data = it.data!!.data;
+//                uriImagen = it.data!!.data!!;
+//                binding.avatarPerfil.setImageURI(data)
+//            }
+//        }
+
+        binding.selectImage.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+//            val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//            intent.type = "image/*"
+//            startForActivityResultGallery.launch(intent)
+        }
+        binding.btnChangeImage.setOnClickListener {
+            settingViewModel.updateAvatar(uriImagen,requireActivity())
+        }
+
+        settingViewModel.isLoading.observe(viewLifecycleOwner, {
+            if (it === true) {
+                if (!pDialog!!.isShowing) {
+                    pDialog!!.setMessage(resources.getString(R.string.cargando));
+                    pDialog!!.show()
+                }
+            } else {
+                if (pDialog!!.isShowing) {
+                    pDialog!!.hide()
+                }
+            }
+        })
     }
 
     companion object {

@@ -1,11 +1,11 @@
 package com.example.buyshared.domain.repository.remote
 
+import android.app.Activity
+import android.content.Context
+import android.net.Uri
 import com.example.buyshared.data.retrofitObjet.GenericResponse
-import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.UpdateAvatarResponse
 import retrofit2.Response
-import retrofit2.http.Field
-import java.io.File
 
 interface ChangeInfoPersonalRetrofitRepository {
     suspend fun updateInfoPersonal(
@@ -14,7 +14,7 @@ interface ChangeInfoPersonalRetrofitRepository {
     ):Response<GenericResponse>?
 
     suspend fun updateAvatar(
-        file: File
+        uriFile: Uri,context:Activity
     ):Response<UpdateAvatarResponse>?
 
     suspend fun updatePassword(
@@ -22,4 +22,5 @@ interface ChangeInfoPersonalRetrofitRepository {
         passwordNew: String,
         passwordRepetNew: String
     ):Response<GenericResponse>?
+
 }

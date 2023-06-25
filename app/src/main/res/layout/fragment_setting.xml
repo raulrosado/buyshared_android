@@ -52,50 +52,62 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardCambiarImagen"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="?attr/materialCardViewFilledStyle"
-                android:clickable="true"
-                android:focusable="true"
-                android:checkable="true"
-                android:elevation="18dp"
-                android:padding="20dp"
+                android:layout_margin="8dp"
                 android:layout_marginBottom="15dp"
-                android:layout_margin="8dp">
+                android:checkable="true"
+                android:clickable="true"
+                android:elevation="18dp"
+                android:focusable="true"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/cambiarimagen"
-                        android:textStyle="bold"
                         android:textAlignment="center"
                         android:textSize="20dp"
-                        />
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_gravity="center_vertical|center_horizontal"
                         android:gravity="center_vertical|center_horizontal"
-                        >
+                        android:orientation="horizontal">
+
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/avatarPerfil"
                             android:layout_width="80dp"
                             android:layout_height="80dp"
-                            android:src="@drawable/avatar"
-                            />
-                        <com.google.android.material.button.MaterialButton
-                            style="?attr/borderlessButtonStyle"
+                            android:src="@drawable/avatar" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/seleccionarImagen" />
+                            android:layout_marginLeft="5dp"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/imgSeleccionada"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/selectImage"
+                                style="?attr/borderlessButtonStyle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:text="@string/seleccionarImagen" />
+                        </LinearLayout>
                     </LinearLayout>
                     <!-- Buttons -->
                     <LinearLayout
@@ -105,6 +117,7 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChangeImage"
                             style="@style/Widget.Material3.Button.Icon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -115,41 +128,41 @@
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardInfoPersonal"
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="?attr/materialCardViewFilledStyle"
-                android:clickable="true"
-                android:focusable="true"
-                android:checkable="true"
-                android:elevation="18dp"
-                android:padding="20dp"
+                android:layout_margin="8dp"
                 android:layout_marginBottom="15dp"
-                android:layout_margin="8dp">
+                android:checkable="true"
+                android:clickable="true"
+                android:elevation="18dp"
+                android:focusable="true"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/infoPersonal"
-                        android:textStyle="bold"
                         android:textAlignment="center"
                         android:textSize="20dp"
-                        />
+                        android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:startIconDrawable="@drawable/baseline_person_24"
-                        app:startIconContentDescription="@string/name"
                         android:layout_marginBottom="5dp"
-                        android:hint="@string/name">
+                        android:hint="@string/name"
+                        app:startIconContentDescription="@string/name"
+                        app:startIconDrawable="@drawable/baseline_person_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/nameField"
@@ -159,13 +172,14 @@
                             android:singleLine="true" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:startIconDrawable="@drawable/baseline_alternate_email_24"
+                        android:hint="@string/emailPlaholder"
                         app:startIconContentDescription="@string/emailPlaholder"
 
-                        android:hint="@string/emailPlaholder">
+                        app:startIconDrawable="@drawable/baseline_alternate_email_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/emailField"
@@ -184,52 +198,52 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnUpdateInfo"
                             style="@style/Widget.Material3.Button.Icon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
-                            android:id="@+id/btnUpdateInfo"
                             android:text="@string/actualizar" />
                     </LinearLayout>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="?attr/materialCardViewFilledStyle"
-                android:clickable="true"
-                android:focusable="true"
-                android:checkable="true"
-                android:elevation="18dp"
-                android:padding="20dp"
+                android:layout_margin="8dp"
                 android:layout_marginBottom="15dp"
-                android:layout_margin="8dp">
+                android:checkable="true"
+                android:clickable="true"
+                android:elevation="18dp"
+                android:focusable="true"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="20dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/changePassword"
-                        android:textStyle="bold"
                         android:textAlignment="center"
                         android:textSize="20dp"
-                        />
+                        android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:startIconDrawable="@drawable/baseline_password_24"
-                        app:startIconContentDescription="@string/oldPassw"
                         android:layout_marginBottom="5dp"
+                        android:hint="@string/oldPassw"
                         app:endIconMode="password_toggle"
-                        android:hint="@string/oldPassw">
+                        app:startIconContentDescription="@string/oldPassw"
+                        app:startIconDrawable="@drawable/baseline_password_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/oldPassword"
@@ -239,13 +253,14 @@
                             android:singleLine="true" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:startIconDrawable="@drawable/baseline_password_24"
-                        app:startIconContentDescription="@string/newPassword"
+                        android:hint="@string/newPassword"
                         app:endIconMode="password_toggle"
-                        android:hint="@string/newPassword">
+                        app:startIconContentDescription="@string/newPassword"
+                        app:startIconDrawable="@drawable/baseline_password_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/newPass"
@@ -255,13 +270,14 @@
                             android:singleLine="true" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:startIconDrawable="@drawable/baseline_password_24"
-                        app:startIconContentDescription="@string/newPassword"
+                        android:hint="@string/newPassword"
                         app:endIconMode="password_toggle"
-                        android:hint="@string/newPassword">
+                        app:startIconContentDescription="@string/newPassword"
+                        app:startIconDrawable="@drawable/baseline_password_24">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/newRepetPass"
@@ -280,11 +296,11 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnUpdatePassw"
                             style="@style/Widget.Material3.Button.Icon"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
-                            android:id="@+id/btnUpdatePassw"
                             android:text="@string/actualizar" />
                     </LinearLayout>
 

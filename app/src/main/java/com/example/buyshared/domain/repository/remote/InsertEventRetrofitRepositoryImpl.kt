@@ -22,12 +22,12 @@ class InsertEventRetrofitRepositoryImpl @Inject constructor(
     ): Response<InsertEventResponse>? {
         var response: Response<InsertEventResponse>? = null
         try {
-            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
-            val fullName = RequestBody.create(MediaType.parse("multipart/form-data"), nombre)
-
-            Log.v("buysharedLog", "fullName:" + fullName.toString())
-            response = apiRetrofit.postInsertEvent(requestFile, nombre)
+//            val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+//            val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+//            val fullName = RequestBody.create(MediaType.parse("multipart/form-data"), nombre)
+//
+//            Log.v("buysharedLog", "fullName:" + fullName.toString())
+//            response = apiRetrofit.postInsertEvent(requestFile, nombre)
 
             Log.v("buysharedLog", "response:" + response.toString())
         } catch (e: HttpException) {
