@@ -20,6 +20,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.buyshared.R
@@ -64,6 +65,7 @@ class MainFragment : Fragment() {
     lateinit var fragmentTransaction: FragmentTransaction
     var bottomSheetDialog: BottomSheetDialog? = null
     lateinit var uriImagen: Uri
+    val switchTypeEvent = MutableLiveData<Boolean>(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,44 +132,52 @@ class MainFragment : Fragment() {
         bottomSheetDialog!!.findViewById<MaterialSwitch>(R.id.materialSwitch)!!
             .setOnCheckedChangeListener(
                 CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
-                    Log.v(logi, "Password Switch is checked " + isChecked)
+                    Log.v(logi, "Switch is checked " + isChecked)
                     if (isChecked) {
-                        bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility = View.VISIBLE
-                        bottomSheetDialog!!.findViewById<TextView>(R.id.txtName)!!.hint = getString(R.string.AddEventos)
-                        if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
-                            Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
-                        } else {
-                            bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!
-                                .setOnClickListener {
-                                    Log.v(logi, "text:" + bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString())
-                                    mainViewModel.inserEventRetrofit(
-                                        bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString(),
-                                        uriImagen,
-                                        requireContext()
-                                    )
-                                }
-                        }
+                        switchTypeEvent.postValue(true)
                     } else {
-                        bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility =
-                            View.GONE
-                        bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!.setOnClickListener {
-                            if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
-                                Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
-                            } else {
-                                mainViewModel.insertListRetrofit(
-                                    bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString(),
-                                    "1",
-                                    "",
-                                    ""
-                                )
-                                if (!pDialog!!.isShowing) {
-                                    pDialog!!.setMessage(resources.getString(R.string.insertMessage));
-                                    pDialog!!.show()
-                                }
-                            }
-                        }
+                        switchTypeEvent.postValue(false)
                     }
                 })
+
+        switchTypeEvent.observe(viewLifecycleOwner,{
+            if (it) {
+                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility = View.VISIBLE
+                bottomSheetDialog!!.findViewById<TextView>(R.id.txtName)!!.hint = getString(R.string.AddEventos)
+                if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
+                    Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
+                } else {
+                    bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!
+                        .setOnClickListener {
+                            Log.v(logi, "text:" + bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString())
+                            mainViewModel.inserEventRetrofit(
+                                bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString(),
+                                uriImagen,
+                                requireContext()
+                            )
+                        }
+                }
+            } else {
+                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility =
+                    View.GONE
+                bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!.setOnClickListener {
+                    if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
+                        Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
+                    } else {
+                        mainViewModel.insertListRetrofit(
+                            bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text.toString(),
+                            "1",
+                            "",
+                            ""
+                        )
+                        if (!pDialog!!.isShowing) {
+                            pDialog!!.setMessage(resources.getString(R.string.insertMessage));
+                            pDialog!!.show()
+                        }
+                    }
+                }
+            }
+        })
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

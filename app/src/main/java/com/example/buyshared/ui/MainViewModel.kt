@@ -225,34 +225,32 @@ class MainViewModel @Inject constructor(
             val result: InsertListResponse? =
                 insertListRetrofitUseCase.invoke(nombre, estado, id_event, referencia)
             isInsert.postValue(true)
-            Log.v(logi, "success:" + result)
-            if (result!!.success) {
-                isInsert.postValue(false)
-                Log.v(logi, "success:" + result)
-                insertListsDBUseCase.invoke(
-                    ListsEntity(
-                        0,
-                        result!!._id,
-                        result!!.__v,
-                        result!!.cant,
-                        result!!.nombre,
-                        result!!.referencia,
-                        result!!.estado,
-                        result!!.id_user
-                    )
+            insertListsDBUseCase.invoke(
+                ListsEntity(
+                    0,
+                    result!!._id,
+                    result!!.__v,
+                    result!!.cant,
+                    result!!.nombre,
+                    result!!.referencia,
+                    result!!.estado,
+                    result!!.id_user
                 )
-                val getAllList = getAllListsDBUseCase.invoke()
-                listLists.postValue(getAllList)
-            }
+            )
+            val getAllList = getAllListsDBUseCase.invoke()
+            listLists.postValue(getAllList)
+            isInsert.postValue(false)
+
         }
     }
 
-    fun inserEventRetrofit(nombre: String, file: Uri,context:Context) {
+    fun inserEventRetrofit(nombre: String, file: Uri, context: Context) {
         isLoading.postValue(true)
         isInserterEvent.postValue(true)
         viewModelScope.launch {
             isLoading.postValue(false)
-            val result: InsertEventResponse? = insertEventRetrofitUseCase.invoke(nombre, file, context)
+            val result: InsertEventResponse? =
+                insertEventRetrofitUseCase.invoke(nombre, file, context)
             Log.v(logi, "success:" + result)
             insertDBUseCase(
                 EventsEntity(
@@ -266,7 +264,7 @@ class MainViewModel @Inject constructor(
                     result.__v,
                     result.cant,
                     result.complet,
-                   0
+                    0
                 )
             )
             val getAllEvent = getAllEventsDBUseCase.invoke()
@@ -415,7 +413,7 @@ class MainViewModel @Inject constructor(
 
     fun addSolicitud(email: String, idEvent: String, idList: String, context: Context) {
         isLoading.postValue(true)
-        Log.v(logi, "cosas:"+email+"/"+idEvent+"/"+idList)
+        Log.v(logi, "cosas:" + email + "/" + idEvent + "/" + idList)
         viewModelScope.launch {
             val result: SolicitudResponse? = addSolicitudUseCase(email, idEvent, idList)
             isLoading.postValue(false)
@@ -423,7 +421,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun delList(id:String){
+    fun delList(id: String) {
         isLoading.postValue(true)
         isDel.postValue(false)
         viewModelScope.launch {
@@ -432,7 +430,8 @@ class MainViewModel @Inject constructor(
             isDel.postValue(true)
         }
     }
-    fun delEvent(id:String){
+
+    fun delEvent(id: String) {
         isLoading.postValue(true)
         isDel.postValue(false)
         viewModelScope.launch {
