@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.example.buyshared.R
 import com.example.buyshared.databinding.FragmentSettingBinding
 import com.example.buyshared.ui.Activity.ReplaceFragment
@@ -63,24 +64,23 @@ class SettingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-
         _binding = FragmentSettingBinding.inflate(inflater, container, false)
         inicio()
         return binding.root
     }
 
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){ uri ->
-        if(uri!= null){
+    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
             //imagen seleccionada
-            Log.v(logi,"imagen seleccionada"+uri)
+            Log.v(logi, "imagen seleccionada" + uri)
             uriImagen = uri
             binding.avatarPerfil.setImageURI(uri)
-        }else{
+        } else {
             //no Image
-            Log.v(logi,"imagen NO seleccionada")
+            Log.v(logi, "imagen NO seleccionada")
         }
     }
+
     private fun inicio() {
         tinyDB = TinyDB(requireContext())
         pDialog = ProgressDialog(requireContext());
@@ -90,6 +90,12 @@ class SettingFragment : Fragment() {
         var infoUser = JSONObject(tinyDB.getString("user").toString())
         binding.nameField.setText(infoUser.getString("name") + " " + infoUser.getString("apellidos"))
         binding.emailField.setText(infoUser.getString("email"))
+
+        Glide.with(requireContext())
+            .load(tinyDB.getString("server").toString() + "images/" +infoUser.getString("avatar"))
+            .placeholder(R.drawable.avatar2)
+            .error(R.drawable.avatar2)
+            .into(binding.avatarPerfil);
 
         binding.btnBack.setOnClickListener {
             replaceFragment(
@@ -136,7 +142,7 @@ class SettingFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.btnChangeImage.setOnClickListener {
-            settingViewModel.updateAvatar(uriImagen,requireActivity())
+            settingViewModel.updateAvatar(uriImagen, requireActivity())
         }
 
         settingViewModel.isLoading.observe(viewLifecycleOwner, {
