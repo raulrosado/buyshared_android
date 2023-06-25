@@ -1,6 +1,7 @@
 package com.example.buyshared.ui
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -16,7 +17,6 @@ import com.example.buyshared.data.retrofitObjet.Avatar
 import com.example.buyshared.data.retrofitObjet.DelListResponse
 import com.example.buyshared.data.retrofitObjet.DelTaskResponse
 import com.example.buyshared.data.retrofitObjet.EventDetailResponse
-import com.example.buyshared.data.retrofitObjet.EventsResponse
 import com.example.buyshared.data.retrofitObjet.EventsResponse2
 import com.example.buyshared.data.retrofitObjet.InsertEventResponse
 import com.example.buyshared.data.retrofitObjet.InsertListResponse
@@ -64,7 +64,6 @@ import com.example.buyshared.domain.usecase.getAllListsDBUseCase
 import com.example.buyshared.ui.Activity.TinyDB
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 
@@ -107,6 +106,7 @@ class MainViewModel @Inject constructor(
     private val delEventUseCase: DelEventUseCase
 ) : ViewModel() {
     val isLoading = MutableLiveData<Boolean>()
+    val isInserterEvent = MutableLiveData<Boolean>()
     val isLoadingTask = MutableLiveData<Boolean>()
     val isEdited = MutableLiveData<Boolean>()
     val isLoadingView = MutableLiveData<Int>(View.GONE)
@@ -247,10 +247,32 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun inserEventRetrofit(nombre: String, file: File) {
+    fun inserEventRetrofit(nombre: String, file: Uri,context:Context) {
+        isLoading.postValue(true)
+        isInserterEvent.postValue(true)
         viewModelScope.launch {
-            val result: InsertEventResponse? = insertEventRetrofitUseCase.invoke(nombre, file)
+            isLoading.postValue(false)
+            val result: InsertEventResponse? = insertEventRetrofitUseCase.invoke(nombre, file, context)
             Log.v(logi, "success:" + result)
+            insertDBUseCase(
+                EventsEntity(
+                    0,
+                    result!!._id,
+                    result.id_user,
+                    result.nombre,
+                    result.bg,
+                    result.estado,
+                    result.referencia,
+                    result.__v,
+                    result.cant,
+                    result.complet,
+                   0
+                )
+            )
+            val getAllEvent = getAllEventsDBUseCase.invoke()
+            listEvents.postValue(getAllEvent)
+            isInserterEvent.postValue(false)
+            Log.v(logi, "getAllEvents:" + getAllEvent.size)
         }
     }
 
@@ -274,9 +296,7 @@ class MainViewModel @Inject constructor(
                 Log.v(logi, "task:" + task.texto)
                 insertTaskDBUserCase.invoke(task.toTaskEntity())
             }
-
             listAvatarsList.postValue(result!!.avatarList)
-
             val listTask = loadTaskByIdListUserCase.invoke(idList)
             listTasks.postValue(listTask)
             Log.v(logi, "cantidad de tareas:" + listTask.size)

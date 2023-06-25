@@ -7,24 +7,21 @@ import android.provider.MediaStore
 import android.util.Log
 
 class Function() {
-    public fun getRealPathFromURI(contentUri: Uri, context: Context): String? {
+    public fun getRealPathFromURI(context: Context, contentUri: Uri): String {
         var cursor: Cursor? = null
-        val column_index: Int
-        var ruta: String? = null
-        return try {
+        try {
             val proj = arrayOf(MediaStore.Images.Media.DATA)
-            cursor = context.contentResolver.query(contentUri!!, proj, null, null, null)
-            if (cursor != null) {
-                column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA)
-                cursor.moveToFirst()
-                Log.v("BuySharedLog",cursor.count.toString())
-                Log.v("BuySharedLog",cursor.getColumnName(0))
-                ruta = cursor.getString(column_index)
-            }
-            ruta
+            cursor = context.contentResolver.query(contentUri, proj, null, null, null)
+            val column_index = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            return cursor.getString(column_index)
+        } catch (e: Exception) {
+            Log.v("BuySharedLog", "getRealPathFromURI Exception : " + e.toString())
+            return ""
         } finally {
-//            cursor?.close()
-            ruta
+            if (cursor != null) {
+                cursor.close()
+            }
         }
     }
 }

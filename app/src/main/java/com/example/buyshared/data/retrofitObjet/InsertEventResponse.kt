@@ -6,7 +6,7 @@ data class InsertEventResponse(
     val avatar: List<Avatar>,
     val bg: String,
     val cant: Int,
-    val complet: Any,
+    val complet: Int,
     val estado: Int,
     val id_user: String,
     val nombre: String,

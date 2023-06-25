@@ -115,9 +115,13 @@ object RetrofitHelper {
         var tinyDB = TinyDB(app)
         var server = tinyDB.getString("server")
         var token = tinyDB.getString("token")
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY})
+
         return Retrofit.Builder()
             .baseUrl(server + "v1/api/")
             .client(interceptorFun(token!!))
+//            .client(httpClient.build())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import com.example.buyshared.core.Function
 import com.example.buyshared.data.remote.services.ChangeInfoApi
 import com.example.buyshared.data.remote.services.UpdateAvatarApi
 import com.example.buyshared.data.remote.services.UpdatePasswordApi
@@ -61,7 +62,8 @@ class ChangeInfoPersonalRetrofitRepositoryImpl @Inject constructor(
     ): Response<UpdateAvatarResponse>? {
         var responseAvatar: Response<UpdateAvatarResponse>? = null
         try {
-            val file = File(getRealPathFromURI(context!!, uriFile!!))
+            val function = Function()
+            val file = File(function.getRealPathFromURI(context!!, uriFile!!))
             val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
             val part = MultipartBody.Part.createFormData("file",file.name,requestBody)
             responseAvatar = apiAvatarApi.changeInfoPersonal(part)
@@ -74,24 +76,6 @@ class ChangeInfoPersonalRetrofitRepositoryImpl @Inject constructor(
             Log.v("buysharedLog", "Error, problema en la consulta al servidor")
         }
         return responseAvatar
-    }
-
-    fun getRealPathFromURI(context: Context, contentUri: Uri): String {
-        var cursor: Cursor? = null
-        try {
-            val proj = arrayOf(MediaStore.Images.Media.DATA)
-            cursor = context.contentResolver.query(contentUri, proj, null, null, null)
-            val column_index = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-            cursor.moveToFirst()
-            return cursor.getString(column_index)
-        } catch (e: Exception) {
-            Log.v("BuySharedLog", "getRealPathFromURI Exception : " + e.toString())
-            return ""
-        } finally {
-            if (cursor != null) {
-                cursor.close()
-            }
-        }
     }
 
     override suspend fun updatePassword(

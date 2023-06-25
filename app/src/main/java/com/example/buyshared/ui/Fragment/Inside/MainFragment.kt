@@ -6,10 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.CompoundButton
 import android.widget.PopupMenu
@@ -31,14 +29,12 @@ import com.example.buyshared.databinding.FragmentMainBinding
 import com.example.buyshared.ui.Activity.MainActivity
 import com.example.buyshared.ui.Activity.ReplaceFragment
 import com.example.buyshared.ui.Activity.TinyDB
-import com.example.buyshared.ui.Fragment.LoginFragment
 import com.example.buyshared.ui.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputEditText
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
-import java.io.File
 
 
 /**
@@ -143,10 +139,11 @@ class MainFragment : Fragment() {
                         } else {
                             bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!
                                 .setOnClickListener {
-                                    val imageFile = File(uriImagen.getPath());
+                                    Log.v(logi, "text:" + bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString())
                                     mainViewModel.inserEventRetrofit(
                                         bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString(),
-                                        imageFile
+                                        uriImagen,
+                                        requireContext()
                                     )
                                 }
                         }
@@ -192,6 +189,12 @@ class MainFragment : Fragment() {
                 binding.progressBarLogin.visibility = View.VISIBLE
             } else {
                 binding.progressBarLogin.visibility = View.GONE
+            }
+        })
+
+        mainViewModel.isInserterEvent.observe(viewLifecycleOwner, {
+            if (it === true) {
+                bottomSheetDialog!!.hide()
             }
         })
 

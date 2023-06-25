@@ -132,23 +132,8 @@ class SettingFragment : Fragment() {
             }
         })
 
-//        val startForActivityResultGallery = registerForActivityResult(
-//            ActivityResultContracts.StartActivityForResult()
-//        ) {
-//            if (it.resultCode == Activity.RESULT_OK) {
-//                Log.v(logi,"it:"+it)
-//                Log.v(logi,"it:"+it.data!!.data)
-//                val data = it.data!!.data;
-//                uriImagen = it.data!!.data!!;
-//                binding.avatarPerfil.setImageURI(data)
-//            }
-//        }
-
         binding.selectImage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-//            val intent = Intent(Intent.ACTION_GET_CONTENT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//            intent.type = "image/*"
-//            startForActivityResultGallery.launch(intent)
         }
         binding.btnChangeImage.setOnClickListener {
             settingViewModel.updateAvatar(uriImagen,requireActivity())
