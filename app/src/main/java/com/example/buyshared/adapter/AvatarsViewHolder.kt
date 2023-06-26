@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.buyshared.data.retrofitObjet.Avatar
 import com.example.buyshared.databinding.ItemAvatarBinding
+import com.example.buyshared.ui.Activity.TinyDB
 import com.example.buyshared.ui.MainViewModel
 
 class AvatarsViewHolder(
@@ -16,8 +17,10 @@ class AvatarsViewHolder(
 ) :
     RecyclerView.ViewHolder(view) {
     val binding = ItemAvatarBinding.bind(view)
+    val tinyDB = TinyDB(requireActivity)
 
-    fun render(avatar:Avatar) {
-        Glide.with(requireActivity).load("https://buyshare.onrender.com/images/"+avatar.avatar).into(binding.avatar);
+    fun render(avatar: Avatar) {
+        Glide.with(requireActivity).load(tinyDB.getString("server") + avatar.avatar)
+            .into(binding.avatar);
     }
 }

@@ -28,27 +28,32 @@ class EventViewHolder(
     lateinit var fragmentTransaction: FragmentTransaction
     val tinyDB = TinyDB(requireActivity)
 
-    fun render(eventModel: EventsEntity){
+    fun render(eventModel: EventsEntity) {
         binding.itemEventNombre.text = eventModel.nombre
         binding.itemCantArticulos.text = eventModel.cant.toString()
         binding.progressBar.max = eventModel.cant
         binding.progressBar.progress = eventModel.taskcomplet
         fragmentTransaction = requireActivity.supportFragmentManager.beginTransaction()
 
-        Log.v("buysharedLog","https://buyshare.onrender.com/images/"+eventModel.bg + "-----" + eventModel.cant + "********" + eventModel.taskcomplet)
-        Glide.with(parent).load("https://buyshare.onrender.com/images/"+eventModel.bg).into(binding.itemImgEvent);
+        Log.v(
+            "buysharedLog",
+            tinyDB.getString("server") + eventModel.bg + "-----" + eventModel.cant + "********" + eventModel.taskcomplet
+        )
+        Glide.with(parent).load(tinyDB.getString("server") + eventModel.bg)
+            .into(binding.itemImgEvent);
 
         val recyclerAvatarsList = binding.recyclerAvatarEvents
-        recyclerAvatarsList.layoutManager = LinearLayoutManager(requireActivity, LinearLayoutManager.HORIZONTAL, false)
+        recyclerAvatarsList.layoutManager =
+            LinearLayoutManager(requireActivity, LinearLayoutManager.HORIZONTAL, false)
 
         val avatarsList = mainViewModel.loadAvatarDBByIdEvent(eventModel._id)
-        Log.v("buySharedLog", "cantidad avatar Event"+avatarsList.size)
-        recyclerAvatarsList.adapter = AvatarAdapter(avatarsList,requireActivity)
+        Log.v("buySharedLog", "cantidad avatar Event" + avatarsList.size)
+        recyclerAvatarsList.adapter = AvatarAdapter(avatarsList, requireActivity)
 
         binding.cardEvent.setOnClickListener {
             Log.v("buysharedLog", "lista seleccionada:" + eventModel.nombre)
-            tinyDB.putString("eventSel",eventModel._id)
-            tinyDB.putString("typeSelect","event")
+            tinyDB.putString("eventSel", eventModel._id)
+            tinyDB.putString("typeSelect", "event")
             replaceFragment(
                 R.id.contenedorFragmentPrincipal,
                 EventDetailFragment(),

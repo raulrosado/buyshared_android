@@ -42,7 +42,7 @@ class EventDetailFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    private var _binding:FragmentEventDetailBinding? = null
+    private var _binding: FragmentEventDetailBinding? = null
     private val binding get() = _binding!!
 
     lateinit var tinyDB: TinyDB
@@ -66,7 +66,7 @@ class EventDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentEventDetailBinding.inflate(inflater,container,false)
+        _binding = FragmentEventDetailBinding.inflate(inflater, container, false)
         inicio()
         return binding.root
     }
@@ -98,7 +98,8 @@ class EventDetailFragment : Fragment() {
         }
 
         binding.titleEvent.text = infoEvent!!.nombre
-        Glide.with(requireContext()).load("https://buyshare.onrender.com/images/"+infoEvent.bg).into(binding.imgBGEvent);
+        Glide.with(requireContext()).load(tinyDB.getString("server") + infoEvent.bg)
+            .into(binding.imgBGEvent);
 
         mainViewModel.loadEventDetail(idEvent.toString())
         val recyclerTaskEventDetail = binding.recyclerTaskEventDetail
@@ -108,7 +109,7 @@ class EventDetailFragment : Fragment() {
         recyclerAvatarsListDetail.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        mainViewModel.listTasks.observe(viewLifecycleOwner,{
+        mainViewModel.listTasks.observe(viewLifecycleOwner, {
             recyclerTaskEventDetail.adapter = TasksAdapter(
                 it,
                 requireActivity(),
@@ -117,20 +118,20 @@ class EventDetailFragment : Fragment() {
             )
         })
 
-        mainViewModel.listAvatarsList.observe(viewLifecycleOwner,{
+        mainViewModel.listAvatarsList.observe(viewLifecycleOwner, {
             recyclerAvatarsListDetail.adapter = AvatarAdapter(it, requireActivity())
         })
 
-        mainViewModel.isLoadEvent.observe(viewLifecycleOwner,{
-            if(it){
+        mainViewModel.isLoadEvent.observe(viewLifecycleOwner, {
+            if (it) {
                 binding.loadEventDetail.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.loadEventDetail.visibility = View.GONE
             }
         })
 
-        mainViewModel.positionEdit.observe(viewLifecycleOwner,{
-            if(it !== null) {
+        mainViewModel.positionEdit.observe(viewLifecycleOwner, {
+            if (it !== null) {
                 Log.v(logi, "position:" + mainViewModel.positionEdit.value)
                 recyclerTaskEventDetail.adapter = TasksAdapter(
                     mainViewModel.listTasks.value!!,
@@ -155,7 +156,8 @@ class EventDetailFragment : Fragment() {
         }
 
         bottomSheetDialog!!.findViewById<Button>(R.id.btnAddTask)!!.setOnClickListener {
-            mainViewModel.addTask("event",
+            mainViewModel.addTask(
+                "event",
                 tinyDB.getString("eventSel").toString(),
                 "",
                 tinyDB.getString("eventSel").toString(),
@@ -164,24 +166,25 @@ class EventDetailFragment : Fragment() {
             bottomSheetDialog!!.hide()
         }
 
-        bottomSheetDialogAddSolicitud!!.findViewById<Button>(R.id.btnAddSolicitud)!!.setOnClickListener {
-            mainViewModel.addSolicitud(
-                bottomSheetDialogAddSolicitud!!.findViewById<TextInputEditText>(R.id.txtEmailSolicitud)!!.text.toString(),
-                tinyDB.getString("eventSel").toString(),
-                tinyDB.getString("listSel").toString(),
-                requireContext()
-            )
-            bottomSheetDialogAddSolicitud!!.hide()
-        }
+        bottomSheetDialogAddSolicitud!!.findViewById<Button>(R.id.btnAddSolicitud)!!
+            .setOnClickListener {
+                mainViewModel.addSolicitud(
+                    bottomSheetDialogAddSolicitud!!.findViewById<TextInputEditText>(R.id.txtEmailSolicitud)!!.text.toString(),
+                    tinyDB.getString("eventSel").toString(),
+                    tinyDB.getString("listSel").toString(),
+                    requireContext()
+                )
+                bottomSheetDialogAddSolicitud!!.hide()
+            }
 
 
-        mainViewModel.isLoading.observe(viewLifecycleOwner,{
-            if(it){
+        mainViewModel.isLoading.observe(viewLifecycleOwner, {
+            if (it) {
                 if (!pDialog!!.isShowing) {
                     pDialog!!.setMessage(resources.getString(R.string.cargando));
                     pDialog!!.show()
                 }
-            }else{
+            } else {
                 if (pDialog!!.isShowing) {
                     pDialog!!.hide()
                 }
@@ -192,8 +195,8 @@ class EventDetailFragment : Fragment() {
             showMenu(it, R.menu.optiondetail)
         }
 
-        mainViewModel.isDel.observe(viewLifecycleOwner,{
-            if(it){
+        mainViewModel.isDel.observe(viewLifecycleOwner, {
+            if (it) {
                 replaceFragment(
                     R.id.contenedorFragmentPrincipal,
                     MainFragment(),

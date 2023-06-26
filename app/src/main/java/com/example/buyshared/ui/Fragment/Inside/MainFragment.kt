@@ -92,25 +92,28 @@ class MainFragment : Fragment() {
         pDialog = ProgressDialog(requireContext());
         pDialog!!.setCancelable(true);
 
-        tinyDB.putString("listSel","0");
-        tinyDB.putString("eventSel","0");
+        tinyDB.putString("listSel", "0");
+        tinyDB.putString("eventSel", "0");
 
         val tinyInfo = JSONObject(tinyDB.getString("user").toString())
         binding.UserName.text = tinyInfo.getString("name")
         binding.UserLastName.text = tinyInfo.getString("apellidos")
-        Glide.with(requireContext()).load("https://buyshare.onrender.com/images/"+tinyInfo.getString("avatar")).into(binding.userAvatar);
+        Glide.with(requireContext()).load(tinyDB.getString("server") + tinyInfo.getString("avatar"))
+            .into(binding.userAvatar);
 
-        val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()){uri ->
-            if(uri != null ){
-                //imagen seleccionada
-                Log.v(logi,"Imagen Seleccionada:"+uri)
-                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.text = uri.lastPathSegment.toString()
-                uriImagen = uri
-            }else{
-                //no imagen
-                Log.v(logi,"No Seleccionada")
+        val pickMedia =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) {
+                    //imagen seleccionada
+                    Log.v(logi, "Imagen Seleccionada:" + uri)
+                    bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.text =
+                        uri.lastPathSegment.toString()
+                    uriImagen = uri
+                } else {
+                    //no imagen
+                    Log.v(logi, "No Seleccionada")
+                }
             }
-        }
 
         bottomSheetDialog = BottomSheetDialog(requireContext())
         val viewrutas: View = layoutInflater.inflate(R.layout.addeventorlist, null)
@@ -140,16 +143,21 @@ class MainFragment : Fragment() {
                     }
                 })
 
-        switchTypeEvent.observe(viewLifecycleOwner,{
+        switchTypeEvent.observe(viewLifecycleOwner, {
             if (it) {
-                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility = View.VISIBLE
-                bottomSheetDialog!!.findViewById<TextView>(R.id.txtName)!!.hint = getString(R.string.AddEventos)
+                bottomSheetDialog!!.findViewById<Button>(R.id.btnSelGalery)!!.visibility =
+                    View.VISIBLE
+                bottomSheetDialog!!.findViewById<TextView>(R.id.txtName)!!.hint =
+                    getString(R.string.AddEventos)
                 if (bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.isEmpty()) {
                     Toast.makeText(context, "Escriba algo", Toast.LENGTH_SHORT).show()
                 } else {
                     bottomSheetDialog!!.findViewById<Button>(R.id.btnAdd)!!
                         .setOnClickListener {
-                            Log.v(logi, "text:" + bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString())
+                            Log.v(
+                                logi,
+                                "text:" + bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString()
+                            )
                             mainViewModel.inserEventRetrofit(
                                 bottomSheetDialog!!.findViewById<TextInputEditText>(R.id.txtName)!!.text!!.toString(),
                                 uriImagen,
@@ -228,7 +236,7 @@ class MainFragment : Fragment() {
         })
 
         mainViewModel.listEvents.observe(viewLifecycleOwner, {
-            recyclerViewEvent.adapter = EventAdapter(it,requireActivity(),mainViewModel)
+            recyclerViewEvent.adapter = EventAdapter(it, requireActivity(), mainViewModel)
             Log.v("buysharedLog", "cantidad eventos:" + it.size)
             if (it.size === 0) {
                 binding.layoutEvents.visibility = View.GONE
@@ -238,7 +246,7 @@ class MainFragment : Fragment() {
         })
 
         mainViewModel.listLists.observe(viewLifecycleOwner, {
-            recyclerViewList.adapter = ListsAdapter(it,requireActivity(),mainViewModel)
+            recyclerViewList.adapter = ListsAdapter(it, requireActivity(), mainViewModel)
         })
     }
 
