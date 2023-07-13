@@ -20,7 +20,7 @@ class AvatarsViewHolder(
     val tinyDB = TinyDB(requireActivity)
 
     fun render(avatar: Avatar) {
-        Glide.with(requireActivity).load(tinyDB.getString("server") + avatar.avatar)
+        Glide.with(requireActivity).load(tinyDB.getString("server") +"images/"+ avatar.avatar)
             .into(binding.avatar);
     }
 }

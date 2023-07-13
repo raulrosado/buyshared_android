@@ -98,7 +98,7 @@ class MainFragment : Fragment() {
         val tinyInfo = JSONObject(tinyDB.getString("user").toString())
         binding.UserName.text = tinyInfo.getString("name")
         binding.UserLastName.text = tinyInfo.getString("apellidos")
-        Glide.with(requireContext()).load(tinyDB.getString("server") + tinyInfo.getString("avatar"))
+        Glide.with(requireContext()).load(tinyDB.getString("server") +"images/"+ tinyInfo.getString("avatar"))
             .into(binding.userAvatar);
 
         val pickMedia =

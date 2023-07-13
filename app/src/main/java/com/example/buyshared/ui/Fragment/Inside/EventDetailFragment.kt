@@ -98,7 +98,7 @@ class EventDetailFragment : Fragment() {
         }
 
         binding.titleEvent.text = infoEvent!!.nombre
-        Glide.with(requireContext()).load(tinyDB.getString("server") + infoEvent.bg)
+        Glide.with(requireContext()).load(tinyDB.getString("server") + "images/" + infoEvent.bg)
             .into(binding.imgBGEvent);
 
         mainViewModel.loadEventDetail(idEvent.toString())

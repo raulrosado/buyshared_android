@@ -39,7 +39,7 @@ class EventViewHolder(
             "buysharedLog",
             tinyDB.getString("server") + eventModel.bg + "-----" + eventModel.cant + "********" + eventModel.taskcomplet
         )
-        Glide.with(parent).load(tinyDB.getString("server") + eventModel.bg)
+        Glide.with(parent).load(tinyDB.getString("server")  +"images/"+ eventModel.bg)
             .into(binding.itemImgEvent);
 
         val recyclerAvatarsList = binding.recyclerAvatarEvents

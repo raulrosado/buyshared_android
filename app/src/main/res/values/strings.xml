@@ -47,4 +47,7 @@
     <string name="oldPassw">Antigua Contraseña</string>
     <string name="newPassword">Nueva Contraseña</string>
     <string name="intoInfo">Introduzca Información</string>
+
+    //google client
+    <string name="server_client_id">273697169590-2eto6orfn9htfj8luhjqrdgu01243f7m.apps.googleusercontent.com</string>
 </resources>
